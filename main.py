@@ -55,19 +55,19 @@ def save_data(data):
 
 
 def save_data_2(data):
-    try:
-        with open(DATA_FILE_2, 'w') as f:
-            json.dump(data, f)
-        print("Data successfully saved.")
-    except Exception as e:
-        print(f"Failed to save data: {e}")
+	try:
+		with open(DATA_FILE_2, 'w') as f:
+			json.dump(data, f)
+		print("Data successfully saved.")
+	except Exception as e:
+		print(f"Failed to save data: {e}")
 
 
 @bot.message_handler(commands=['start'])
 def start_command(message):
 	first_name = message.from_user.first_name
 	text = f'''
- 	Хеей 🐦 {first_name}! Я Birdy. Список моих команд можешь посмотреть по команде: /help.
+	Хеей 🐦 {first_name}! Я Birdy. Список моих команд можешь посмотреть по команде: /help.
 	
 	Краткое описание команд:
 	/profile, "Профиль" - ваш профиль
@@ -79,7 +79,7 @@ def start_command(message):
 	/goods, "Покупки" - ваши покупки
 	
 	Полный список команд с описанием [тут]().
- 	'''
+	'''
 	bot.send_message(message.chat.id, text)
 
 
@@ -162,13 +162,13 @@ def knock_cards_function(message):
 
 	default_wait = 21600
 	if "Бинокль Carl Zeiss Jena 40x105." in inventory:
-	    default_wait = min(default_wait, 12060)
+		default_wait = min(default_wait, 12060)
 	if "Бинокль Fujinon 25x150 MT-SX" in inventory:
-	    default_wait = min(default_wait, 15300)
+		default_wait = min(default_wait, 15300)
 	if "Бинокль Celestron SkyMaster 25x100" in inventory:
-	    default_wait = min(default_wait, 18360)
+		default_wait = min(default_wait, 18360)
 	if "Бинокль Canon 18x50 IS All Weather" in inventory:
-	    default_wait = min(default_wait, 19440)
+		default_wait = min(default_wait, 19440)
 
 	if time_since_last_usage < default_wait:
 		remaining_time = default_wait - time_since_last_usage
@@ -267,34 +267,34 @@ def show_cards(call):
 
 
 def handle_stocoin(message):
-    try:
-        user_id = str(message.from_user.id)
-        first_name = message.from_user.first_name
-        coins_to_add = random.randint(1, 5)
-        current_time = time.time()
+	try:
+		user_id = str(message.from_user.id)
+		first_name = message.from_user.first_name
+		coins_to_add = random.randint(1, 5)
+		current_time = time.time()
 
-        with open("user_coins.json", 'r') as file:
-            data = json.load(file)
+		with open("user_coins.json", 'r') as file:
+			data = json.load(file)
 
-        user_data = data.get(user_id, {"last_request_time": 0})
-        last_request_time = user_data.get("last_request_time", 0)
+		user_data = data.get(user_id, {"last_request_time": 0})
+		last_request_time = user_data.get("last_request_time", 0)
 
-        # Using 1200 seconds (20 minutes) as the limit between requests
-        if current_time - last_request_time < 1200:
-            remaining_time = 1200 - (current_time - last_request_time)
-            minutes, seconds = divmod(remaining_time, 60)
-            bot.reply_to(message, f"Вы уже получили кроны. Попробуйте через {int(minutes)} минут {int(seconds)} секунд.")
-            return
+		# Using 1200 seconds (20 minutes) as the limit between requests
+		if current_time - last_request_time < 1200:
+			remaining_time = 1200 - (current_time - last_request_time)
+			minutes, seconds = divmod(remaining_time, 60)
+			bot.reply_to(message, f"Вы уже получили кроны. Попробуйте через {int(minutes)} минут {int(seconds)} секунд.")
+			return
 
-        update_user_data(user_id, first_name, coins_to_add)
-        data[user_id]["last_request_time"] = current_time  # Update the last request time
+		update_user_data(user_id, first_name, coins_to_add)
+		data[user_id]["last_request_time"] = current_time  # Update the last request time
 
-        with open("user_coins.json", 'w') as file:
-            json.dump(data, file, indent=4)
+		with open("user_coins.json", 'w') as file:
+			json.dump(data, file, indent=4)
 
-        bot.reply_to(message, f"Вы успешно заработали {coins_to_add} золотых крон.")
-    except Exception as e:
-        bot.send_message(message.chat.id, f"Произошла ошибка: {e}")
+		bot.reply_to(message, f"Вы успешно заработали {coins_to_add} золотых крон.")
+	except Exception as e:
+		bot.send_message(message.chat.id, f"Произошла ошибка: {e}")
 
 def handle_shop(message):
 	try:
@@ -381,10 +381,10 @@ def cards_top(message):
 		inline_markup = InlineKeyboardMarkup()
 		button_1 = InlineKeyboardButton(text="Топ по карточкам", callback_data="top_cards_cards")
 		button_2 = InlineKeyboardButton(text="Топ по очкам", callback_data="top_cards_point")
-    		inline_markup.add(url_button)
-    		bot.send_message(message.chat.id, "Топ: Команда /knock.", reply_markup=inline_markup)
-  	except Exception as e:
-  		bot.send_message(message.chat.id, "Временная ошибка в обработке, повтори позже.")
+		inline_markup.add(url_button)
+		bot.send_message(message.chat.id, "Топ: Команда /knock.", reply_markup=inline_markup)
+	except Exception as e:
+		bot.send_message(message.chat.id, "Временная ошибка в обработке, повтори позже.")
 
 
 @bot.callback_query_handler(func=lambda call: call.data.startswith('top_cards_'))
@@ -395,26 +395,26 @@ def cards_top_callback(message):
 	user_data = data.get(user_id, {'points': 0, 'birds': []})
 	if choice == "cards":
 		sorted_data = sorted(data.items(), key=lambda x: len(x[1].get('birds', [])), reverse=True)
-    top_10 = sorted_data[:10]
+	top_10 = sorted_data[:10]
 
-    message_text = "Топ-10 пользователей по количеству собранных карточек:\n\n"
-    for i, (user_id, user_data) in enumerate(top_10, 1):
-        nickname = user_data.get('nickname', 'Unknown')
-        num_cards = len(user_data.get('birds', []))
-        message_text += f"{i}. {nickname}: {num_cards} карточек\n"
+	message_text = "Топ-10 пользователей по количеству собранных карточек:\n\n"
+	for i, (user_id, user_data) in enumerate(top_10, 1):
+		nickname = user_data.get('nickname', 'Unknown')
+		num_cards = len(user_data.get('birds', []))
+		message_text += f"{i}. {nickname}: {num_cards} карточек\n"
 
-    bot.send_message(message.chat.id, message_text)
+	bot.send_message(message.chat.id, message_text)
   else:
 		sorted_data_points = sorted(data.items(), key=lambda x: x[1].get('points', 0), reverse=True)
-    top_10 = sorted_data_points[:10]
+	top_10 = sorted_data_points[:10]
 
-    message_text_2 = "Топ-10 пользователей по количеству собранных карточек:\n\n"
-    for j, (user_id, user_data) in enumerate(top_10, 1):
-        nickname_2 = user_data.get('nickname', 'Unknown')
-        num_cards_2 = len(user_data.get('birds', []))
-        message_text += f"{j}. {nickname_2}: {num_cards_2} карточек\n"
+	message_text_2 = "Топ-10 пользователей по количеству собранных карточек:\n\n"
+	for j, (user_id, user_data) in enumerate(top_10, 1):
+		nickname_2 = user_data.get('nickname', 'Unknown')
+		num_cards_2 = len(user_data.get('birds', []))
+		message_text += f"{j}. {nickname_2}: {num_cards_2} карточек\n"
 
-    bot.send_message(message.chat.id, message_text_2)
+	bot.send_message(message.chat.id, message_text_2)
 
 
 def handle_profile(message, background_image_path="background_image.jpg"):
