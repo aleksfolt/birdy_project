@@ -395,7 +395,6 @@ def cards_top_callback(call):
 	user_id = str(call.message.from_user.id)
 	user_data = data.get(user_id, {'points': 0, 'birds': []})
 	if choice == "cards":
-
 		sorted_data = sorted(data.items(), key=lambda x: len(x[1].get('birds', [])), reverse=True)
 		top_10 = sorted_data[:10]
 
@@ -406,7 +405,7 @@ def cards_top_callback(call):
 			message_text += f"{i}. {nickname}: {num_cards} карточек\n"
 
 		bot.send_message(call.message.chat.id, message_text)
-	else:
+	elif choice == "point":
 		sorted_data_points = sorted(data.items(), key=lambda x: x[1].get('points', 0), reverse=True)
 		top_10 = sorted_data_points[:10]
 
