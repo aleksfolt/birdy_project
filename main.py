@@ -67,7 +67,7 @@ def save_data_2(data):
 def start_command(message):
 	first_name = message.from_user.first_name
 	text = f'''
-Хеей 🐦 {first_name}! Я Birdy. Список моих команд можешь посмотреть по команде: /help.
+Хеей 🐦 {first_name}! Я Birdy.
 
 Краткое описание команд:
 /profile, "Профиль" - ваш профиль
