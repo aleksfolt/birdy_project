@@ -410,11 +410,11 @@ def cards_top_callback(call):
 		sorted_data_points = sorted(data.items(), key=lambda x: x[1].get('points', 0), reverse=True)
 		top_10 = sorted_data_points[:10]
 
-		message_text_2 = "Топ-10 пользователей по количеству собранных карточек:\n\n"
+		message_text = "Топ-10 пользователей по количеству набранных очков:\n\n"
 		for j, (user_id, user_data) in enumerate(top_10, 1):
-			nickname_2 = user_data.get('nickname', 'Unknown')
-			num_cards_2 = len(user_data.get('birds', []))
-			message_text += f"{j}. {nickname_2}: {num_cards_2} карточек\n"
+			nickname_2 = user_data.get('nickname', 'Unknown') 
+			points = user_data.get('points', 0)
+			message_text += f"{i}. {nickname}: {points} очков\n"
 
 		bot.send_message(call.message.chat.id, message_text_2)
 
