@@ -192,11 +192,11 @@ def knock_cards_function(message):
 		photo_data = chosen_bird['photo']
 		if chosen_bird['name'] in user_data['birds']:
 			with open(photo_data, 'rb') as photo_file:
-				bot.send_photo(message.chat.id, photo_file, caption=f"Вам попалась повторка {chosen_bird['name']}! Будут начислены только очки.\nРедкость: {chosen_bird['rarity']}\nОчки:{chosen_bird['points']}\nОбитание: {chosen_bird['place']}")
+				bot.send_photo(message.chat.id, photo_file, caption=f"Вам попалась повторка {chosen_bird['name']}! Будут начислены только очки.\nРедкость: {chosen_bird['rarity']}\nОчки: {chosen_bird['points']}\nОбитание: {chosen_bird['place']}")
 			user_data['points'] += int(chosen_bird['points'])
 		else:
 			with open(photo_data, 'rb') as photo_file:
-				bot.send_photo(message.chat.id, photo_file, caption=f"Из ваших наблюдений вы открыли новую птицу: {chosen_bird['name']}\nРедкость: {chosen_bird['rarity']}\nОчки:{chosen_bird['points']}\nОбитание: {chosen_bird['place']}")
+				bot.send_photo(message.chat.id, photo_file, caption=f"Из ваших наблюдений вы открыли новую птицу: {chosen_bird['name']}\nРедкость: {chosen_bird['rarity']}\nОчки: {chosen_bird['points']}\nОбитание: {chosen_bird['place']}")
 			user_data['birds'].append(chosen_bird['name'])
 			user_data['points'] += int(chosen_bird['points'])
 
@@ -261,7 +261,7 @@ def show_cards(call):
 			photo_data = bird['photo']
 			with open(photo_data, 'rb') as photo_file:
 				chat_type = call.message.chat.type
-				bot.send_photo(call.message.chat.id, photo_file, caption=f"{bird['name']}\nРедкость: {bird['rarity']}\nОчки:{bird['points']}\nОбитание: {bird['place']}")
+				bot.send_photo(call.message.chat.id, photo_file, caption=f"{bird['name']}\nРедкость: {bird['rarity']}\nОчки: {bird['points']}\nОбитание: {bird['place']}")
 	else:
 		bot.send_message(call.message.chat.id, f"У вас нет карточек редкости {rarity}")
 
