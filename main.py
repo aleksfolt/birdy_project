@@ -377,21 +377,22 @@ def handle_goods(message):
 
 
 def cards_top(message):
-	try:
-		inline_markup = InlineKeyboardMarkup()
-		button_1 = InlineKeyboardButton(text="Топ по карточкам", callback_data="top_cards_cards")
-		button_2 = InlineKeyboardButton(text="Топ по очкам", callback_data="top_cards_point")
-		inline_markup.add(button_1, button_2)
-		bot.send_message(message.chat.id, "Топ: Команда /knock.", reply_markup=inline_markup)
-	except Exception as e:
-		bot.send_message(message.chat.id, "Временная ошибка в обработке, повтори позже.")
+    try:
+        inline_markup = InlineKeyboardMarkup()
+        button_1 = InlineKeyboardButton(text="Топ по карточкам", callback_data="top_cards_cards")
+        button_2 = InlineKeyboardButton(text="Топ по очкам", callback_data="top_cards_point")
+        inline_markup.add(button_1, button_2)
+        bot.send_message(message.chat.id, "Топ: Команда /knock.", reply_markup=inline_markup)
+    except Exception as e:
+        print(f"Error: {e}")  # Logging the error can help in debugging
+        bot.send_message(message.chat.id, "Временная ошибка в обработке, повтори позже.")
 
 
 @bot.callback_query_handler(func=lambda call: call.data.startswith('top_cards_'))
-def cards_top_callback(message):
+def cards_top_callback(call):
 	choice = call.data.split('_')[1]
 	data = load_data_cards()
-	user_id = str(message.from_user.id)
+	user_id = str(call.message.from_user.id)
 	user_data = data.get(user_id, {'points': 0, 'birds': []})
 	if choice == "cards":
 
@@ -404,7 +405,7 @@ def cards_top_callback(message):
 			num_cards = len(user_data.get('birds', []))
 			message_text += f"{i}. {nickname}: {num_cards} карточек\n"
 
-		bot.send_message(message.chat.id, message_text)
+		bot.send_message(call.message.chat.id, message_text)
 	else:
 		sorted_data_points = sorted(data.items(), key=lambda x: x[1].get('points', 0), reverse=True)
 		top_10 = sorted_data_points[:10]
@@ -415,7 +416,7 @@ def cards_top_callback(message):
 			num_cards_2 = len(user_data.get('birds', []))
 			message_text += f"{j}. {nickname_2}: {num_cards_2} карточек\n"
 
-		bot.send_message(message.chat.id, message_text_2)
+		bot.send_message(call.message.chat.id, message_text_2)
 
 
 def handle_profile(message, background_image_path="background_image.jpg"):
