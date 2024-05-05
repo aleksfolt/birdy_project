@@ -481,7 +481,7 @@ def handle_profile(message, background_image_path="background_image.jpg"):
 @bot.message_handler(func=lambda message: True)
 def handle_text(message):
 	try:
-			elif message.text == "/chai" or message.text == "чай" or message.text == "Чай":
+			if message.text == "/chai" or message.text == "чай" or message.text == "Чай":
 				send_random_tea(message)
 			elif message.text == "/chai_top" or message.text == "чай топ" or message.text == "Чай топ" or message.text == "Топ чая" or message.text == "топ чая":
 				chai_top(message)
