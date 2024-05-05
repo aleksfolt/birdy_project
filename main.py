@@ -74,7 +74,7 @@ def start_command(message):
 	/chai, "Чай" - выпить чай
 	/chai\_top, "Топ чая" - топ по чаю
 	/knock, "Получить карту" - наблюдение за птичками
- 	/cards\_top "Топ карточек" - топ карточек по поинтам и количеству
+        /cards\_top "Топ карточек" - топ карточек по поинтам и количеству
 	/krone, "Монета", "Крона" - получение монет
 	/shop, "Магазин" - магазин, с товарами за монеты
 	/goods, "Покупки" - ваши покупки
@@ -391,7 +391,7 @@ def cards_top(message):
         button_1 = InlineKeyboardButton(text="Топ по карточкам", callback_data="top_cards_cards")
         button_2 = InlineKeyboardButton(text="Топ по очкам", callback_data="top_cards_point")
         inline_markup.add(button_1, button_2)
-        bot.send_message(message.chat.id, "Топ: Команда /knock.", reply_markup=inline_markup)
+        bot.send_message(message.chat.id, "Топ 10 пользователей по карточкам. Выберите кнопку:", reply_markup=inline_markup)
     except Exception as e:
         print(f"Error: {e}")  # Logging the error can help in debugging
         bot.send_message(message.chat.id, "Временная ошибка в обработке, повтори позже.")
