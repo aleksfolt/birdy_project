@@ -1,0 +1,47 @@
+{
+  "token": "6804403517:AAFlosNuXGhOmSSifQrnvxZC021YA2lGqzU",
+  "birds": [
+    {"rarity": "Редкая", "name": "Сибирский мохноногий ястреб", "place": "Сибирь", "photo": "images/bird_rare.jpg", "points": "1000"},
+    {"rarity": "Редкая", "name": "Большая синица", "place": "Сибирь", "photo": "images/bird_rare_2.jpg", "points": "1000"},
+    {"rarity": "Редкая", "name": "Снегирь", "place": "Сибирь", "photo": "images/bird_rare_3.jpg", "points": "1000"},
+    {"rarity": "Редкая", "name": "Ворон", "place": "Сибирь", "photo": "images/bird_rare_4.jpg", "points": "1000"},
+    {"rarity": "Сверхредкая", "name": "Евразийский древесный воробей", "place": "Сибирь", "photo": "images/bird_sverxrare.jpg", "points": "3000"},
+    {"rarity": "Сверхредкая", "name": "Сосновый дубонос", "place": "Сибирь", "photo": "images/bird_sverxrare_2.jpg", "points": "3000"},
+    {"rarity": "Сверхредкая", "name": "Сибирский клест", "place": "Сибирь", "photo": "images/bird_sverxrare_3.jpg", "points": "3000"},
+    {"rarity": "Сверхредкая", "name": "Евразийский перепелятник", "place": "Сибирь", "photo": "images/bird_sverxrare_4.jpg", "points": "3000"},
+    {"rarity": "Мифическая", "name": "Редполл", "place": "Сибирь", "photo": "images/bird_mific.jpg", "points": "5000"},
+    {"rarity": "Мифическая", "name": "Сапсан", "place": "Сибирь", "photo": "images/bird_mific_2.jpg", "points": "5000"},
+    {"rarity": "Мифическая", "name": "Чернозобый ныряльщик", "place": "Сибирь", "photo": "images/bird_mific_3.jpg", "points": "5000"},
+    {"rarity": "Мифическая", "name": "Клест", "place": "Сибирь", "photo": "images/bird_mific_4.jpg", "points": "5000"},
+    {"rarity": "Легендарная", "name": "Сибирский глухарь", "place": "Сибирь", "photo": "images/bird_legendary.jpg", "points": "10000"},
+    {"rarity": "Легендарная", "name": "Подвид белоголового орлана", "place": "Сибирь", "photo": "images/bird_legendary_2.jpg", "points": "10000"},
+    {"rarity": "Легендарная", "name": "Бледный лунь", "place": "Сибирь", "photo": "images/bird_legendary_3.jpg", "points": "10000"},
+    {"rarity": "Легендарная", "name": "Краснозобый ныряльщик", "place": "Сибирь", "photo": "images/bird_legendary_4.jpg", "points": "10000"}
+  ],
+  "tea_names": [
+    "Зеленый чай",
+    "Черный чай",
+    "Белый чай",
+    "Пуэр",
+    "Оолонг",
+    "Ройбуш",
+    "Мате",
+    "Травяной чай",
+    "Фруктовый чай",
+    "Каркаде",
+    "Чай с лимоном",
+    "Чай с молоком",
+    "Чай с сахаром",
+    "Синий чай",
+    "Ку цяо",
+    "Фиточаи",
+    "Пеко"
+  ],
+  "products": {
+    "product1": {"name": "Бинокль Canon 18x50 IS All Weather", "price": 100, "image": "images/1_canon.jpg"},
+    "product2": {"name": "Бинокль Celestron SkyMaster 25x100", "price": 200, "image": "images/2_celestron.jpg"},
+    "product3": {"name": "Бинокль Fujinon 25x150 MT-SX", "price": 300, "image": "images/3_fujion.jpg"},
+    "product4": {"name": "Бинокль Carl Zeiss Jena 40x105.", "price": 500, "image": "images/4_carl.jpg"},
+    "product5": {"name": "Хлеб, Описание: повышение шансов на легендарную птичку.", "price": 150, "image": "images/hleb.jpg"}
+  }
+}
