@@ -302,6 +302,8 @@ def handle_shop(message):
 		user_id = str(message.from_user.id)
 		username = message.from_user.username
 		current_time = time.time()
+		unique_number = random.randint(1000, 99999999)
+		user_button[user_id] = unique_number
 
 		try:
 			with open("user_coins.json", 'r') as file:
@@ -334,6 +336,10 @@ def handle_shop(message):
 
 @bot.callback_query_handler(func=lambda call: call.data.startswith('buy_'))
 def handle_buy_query(call):
+	user_id = str(call.from_user.id)
+	if user_button.get(user_id) != unique_number:
+		bot.answer_callback_query(call.id, "Не ваша кнопка.", show_alert=True)
+		return
 	product_id = call.data.split('_')[1]
 	product = products[product_id]
 	markup = types.InlineKeyboardMarkup()
