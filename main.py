@@ -73,14 +73,15 @@ def start_command(message):
 	/profile, "Профиль" - ваш профиль
 	/chai, "Чай" - выпить чай
 	/chai_top, "Топ чая" - топ по чаю
-	/knock, "Получить карту" - наблюдение за птичками"
+	/knock, "Получить карту" - наблюдение за птичками
+ 	/cards_top "Топ карточек" - топ карточек по поинтам и количеству
 	/krone, "Монета", "Крона" - получение монет
 	/shop, "Магазин" - магазин, с товарами за монеты
 	/goods, "Покупки" - ваши покупки
 	
-	Полный список команд с описанием [тут]().
+	Полный список команд с описанием [тут](https://teletype.in/@hlb_folt/jNICgr9tP50).
 	'''
-	bot.send_message(message.chat.id, text)
+	bot.send_message(message.chat.id, text, parse_mode='Markdown', disable_web_page_preview=True)
 
 
 def update_user_data(user_id, username, coins=0, purchase=None):
@@ -270,7 +271,7 @@ def handle_stocoin(message):
 	try:
 		user_id = str(message.from_user.id)
 		first_name = message.from_user.first_name
-		coins_to_add = random.randint(1, 5)
+		coins_to_add = random.randint(1, 15)
 		current_time = time.time()
 
 		with open("user_coins.json", 'r') as file:
