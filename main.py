@@ -380,9 +380,9 @@ def cards_top(message):
 	try:
 		inline_markup = InlineKeyboardMarkup()
 		button_1 = InlineKeyboardButton(text="Топ по карточкам", callback_data="top_cards_cards")
-		button_1 = InlineKeyboardButton(text="Топ по очкам", callback_data="top_cards_point")
-			inline_markup.add(button_1, button_1)
-			bot.send_message(message.chat.id, "Топ: Команда /knock.", reply_markup=inline_markup)
+		button_2 = InlineKeyboardButton(text="Топ по очкам", callback_data="top_cards_point")
+		inline_markup.add(button_1, button_2)
+		bot.send_message(message.chat.id, "Топ: Команда /knock.", reply_markup=inline_markup)
 	except Exception as e:
 		bot.send_message(message.chat.id, "Временная ошибка в обработке, повтори позже.")
 
