@@ -63,6 +63,26 @@ def save_data_2(data):
         print(f"Failed to save data: {e}")
 
 
+@bot.message_handler(commands=['start'])
+def start_command(message):
+	first_name = message.from_user.first_name
+	text = f'''
+ 	Хеей 🐦 {first_name}! Я Birdy. Список моих команд можешь посмотреть по команде: /help.
+	
+	Краткое описание команд:
+	/profile, "Профиль" - ваш профиль
+	/chai, "Чай" - выпить чай
+	/chai_top, "Топ чая" - топ по чаю
+	/knock, "Получить карту" - наблюдение за птичками"
+	/krone, "Монета", "Крона" - получение монет
+	/shop, "Магазин" - магазин, с товарами за монеты
+	/goods, "Покупки" - ваши покупки
+	
+	Полный список команд с описанием [тут]().
+ 	'''
+	bot.send_message(message.chat.id, text)
+
+
 def update_user_data(user_id, username, coins=0, purchase=None):
 	try:
 		with open("user_coins.json", 'r') as file:
@@ -356,6 +376,47 @@ def handle_goods(message):
 		bot.send_message(message.chat.id, f"Произошла ошибка {e} (напишите @AleksFolt)")
 
 
+def cards_top(message):
+	try:
+		inline_markup = InlineKeyboardMarkup()
+		button_1 = InlineKeyboardButton(text="Топ по карточкам", callback_data="top_cards_cards")
+		button_2 = InlineKeyboardButton(text="Топ по очкам", callback_data="top_cards_point")
+    inline_markup.add(url_button)
+    bot.send_message(message.chat.id, "Топ: Команда /knock.", reply_markup=inline_markup)
+  except Exception as e:
+  	bot.send_message(message.chat.id, "Временная ошибка в обработке, повтори позже.")
+
+
+@bot.callback_query_handler(func=lambda call: call.data.startswith('top_cards_'))
+def cards_top_callback(message):
+	choice = call.data.split('_')[1]
+	data = load_data_cards()
+	user_id = str(message.from_user.id)
+	user_data = data.get(user_id, {'points': 0, 'birds': []})
+	if choice == "cards":
+		sorted_data = sorted(data.items(), key=lambda x: len(x[1].get('birds', [])), reverse=True)
+    top_10 = sorted_data[:10]
+
+    message_text = "Топ-10 пользователей по количеству собранных карточек:\n\n"
+    for i, (user_id, user_data) in enumerate(top_10, 1):
+        nickname = user_data.get('nickname', 'Unknown')
+        num_cards = len(user_data.get('birds', []))
+        message_text += f"{i}. {nickname}: {num_cards} карточек\n"
+
+    bot.send_message(message.chat.id, message_text)
+  else:
+		sorted_data_points = sorted(data.items(), key=lambda x: x[1].get('points', 0), reverse=True)
+    top_10 = sorted_data_points[:10]
+
+    message_text_2 = "Топ-10 пользователей по количеству собранных карточек:\n\n"
+    for j, (user_id, user_data) in enumerate(top_10, 1):
+        nickname_2 = user_data.get('nickname', 'Unknown')
+        num_cards_2 = len(user_data.get('birds', []))
+        message_text += f"{j}. {nickname_2}: {num_cards_2} карточек\n"
+
+    bot.send_message(message.chat.id, message_text_2)
+
+
 def handle_profile(message, background_image_path="background_image.jpg"):
 		waiting = bot.send_message(message.chat.id, "Секундочку...")
 		user_id = message.from_user.id
@@ -415,17 +476,16 @@ def handle_profile(message, background_image_path="background_image.jpg"):
 		bot.delete_message(message.chat.id, waiting.message_id)
 		bot.send_photo(message.chat.id, photo=final_image_stream, caption=caption, reply_markup=keyboard)
 
+
 @bot.message_handler(func=lambda message: True)
 def handle_text(message):
 	try:
-			if message.text == "/chai":
+			elif message.text == "/chai" or message.text == "чай" or message.text == "Чай":
 				send_random_tea(message)
-			elif message.text == "/chai_top":
+			elif message.text == "/chai_top" or message.text == "чай топ" or message.text == "Чай топ" or message.text == "Топ чая" or message.text == "топ чая":
 				chai_top(message)
-			elif message.text == "/knock":
+			elif message.text == "/knock" or message.text == "кнок" or message.text == "Кнок" or message.text == "получить карту" or message.text == "Получить карту":
 				knock_cards_function(message)
-			elif message.text == "/show_cards":
-				show_knock_cards(message)
 			elif message.text == "/krone" or message.text == "крона" or message.text == "Крона" or message.text == "монета" or message.text == "Монета":
 				handle_stocoin(message)
 			elif message.text == "/shop" or message.text == "магазин" or message.text == "Магазин" or message.text == "шоп" or message.text == "Шоп":
@@ -434,6 +494,8 @@ def handle_text(message):
 				handle_goods(message)
 			elif message.text == "/profile" or message.text == "Профиль" or message.text == "профиль":
 				handle_profile(message)
+			elif message.text == "/cards_top" or message.text == "Топ карточек" or message.text == "топ карточек":
+				cards_top(message)
 	except Exception as e:
 			bot.send_message(message.chat.id, "Временная ошибка в обработке, повторите позже.")
 			bot.send_message(1130692453, f"Произошла ошибка при обработке команды: в чате: {message.chat.id}. Ошибка: {e}")
