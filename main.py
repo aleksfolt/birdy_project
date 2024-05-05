@@ -390,32 +390,32 @@ def cards_top(message):
 
 @bot.callback_query_handler(func=lambda call: call.data.startswith('top_cards_'))
 def cards_top_callback(call):
-	choice = call.data.split('_')[1]
-	data = load_data_cards()
-	user_id = str(call.message.from_user.id)
-	user_data = data.get(user_id, {'points': 0, 'birds': []})
-	if choice == "cards":
-		sorted_data = sorted(data.items(), key=lambda x: len(x[1].get('birds', [])), reverse=True)
-		top_10 = sorted_data[:10]
+    choice = call.data.split('_')[2]  # Обратите внимание на индекс, возможно он должен быть 2
+    data = load_data_cards()
+    user_id = str(call.message.from_user.id)
+    user_data = data.get(user_id, {'points': 0, 'birds': []})
+    if choice == "cards":
+        sorted_data = sorted(data.items(), key=lambda x: len(x[1].get('birds', [])), reverse=True)
+        top_10 = sorted_data[:10]
 
-		message_text = "Топ-10 пользователей по количеству собранных карточек:\n\n"
-		for i, (user_id, user_data) in enumerate(top_10, 1):
-			nickname = user_data.get('nickname', 'Unknown')
-			num_cards = len(user_data.get('birds', []))
-			message_text += f"{i}. {nickname}: {num_cards} карточек\n"
+        message_text = "Топ-10 пользователей по количеству собранных карточек:\n\n"
+        for i, (user_id, user_data) in enumerate(top_10, 1):
+            nickname = user_data.get('nickname', 'Unknown')
+            num_cards = len(user_data.get('birds', []))
+            message_text += f"{i}. {nickname}: {num_cards} карточек\n"
 
-		bot.send_message(call.message.chat.id, message_text)
-	elif choice == "point":
-		sorted_data_points = sorted(data.items(), key=lambda x: x[1].get('points', 0), reverse=True)
-		top_10 = sorted_data_points[:10]
+        bot.send_message(call.message.chat.id, message_text)
+    elif choice == "point":
+        sorted_data_points = sorted(data.items(), key=lambda x: x[1].get('points', 0), reverse=True)
+        top_10 = sorted_data_points[:10]
 
-		message_text = "Топ-10 пользователей по количеству набранных очков:\n\n"
-		for j, (user_id, user_data) in enumerate(top_10, 1):
-			nickname_2 = user_data.get('nickname', 'Unknown') 
-			points = user_data.get('points', 0)
-			message_text += f"{i}. {nickname}: {points} очков\n"
+        message_text = "Топ-10 пользователей по количеству набранных очков:\n\n"
+        for j, (user_id, user_data) in enumerate(top_10, 1):
+            nickname_2 = user_data.get('nickname', 'Unknown') 
+            points = user_data.get('points', 0)
+            message_text += f"{j}. {nickname_2}: {points} очков\n"
 
-		bot.send_message(call.message.chat.id, message_text_2)
+        bot.send_message(call.message.chat.id, message_text)
 
 
 def handle_profile(message, background_image_path="background_image.jpg"):
