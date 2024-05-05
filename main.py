@@ -327,7 +327,7 @@ def handle_shop(message):
 		shop_message = f"Ваш текущий баланс: {coins} камень койнов." + time_message + "\nВыберите товар:"
 		markup = types.InlineKeyboardMarkup(row_width=8)
 		for product_id, product_info in products.items():
-			button = types.InlineKeyboardButton(text=product_info["name"], callback_data=f"buy_{product_id}")
+			button = types.InlineKeyboardButton(text=product_info["name"], callback_data=f"buy_{product_id}_{unique_number}")
 			markup.add(button)
 		bot.send_message(message.chat.id, shop_message, reply_markup=markup)
 	except Exception as e:
@@ -336,6 +336,7 @@ def handle_shop(message):
 
 @bot.callback_query_handler(func=lambda call: call.data.startswith('buy_'))
 def handle_buy_query(call):
+	unique_number = call.data.split('_')[2]
 	user_id = str(call.from_user.id)
 	if user_button.get(user_id) != unique_number:
 		bot.answer_callback_query(call.id, "Не ваша кнопка.", show_alert=True)
