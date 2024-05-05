@@ -1,4 +1,4 @@
-from telebot.types import ReplyKeyboardMarkup, KeyboardButton, WebAppInfo
+from telebot.types import ReplyKeyboardMarkup, KeyboardButton, InlineKeyboardButton, WebAppInfo
 import telebot
 from telebot import types
 import json
