@@ -381,8 +381,8 @@ def cards_top(message):
 		inline_markup = InlineKeyboardMarkup()
 		button_1 = InlineKeyboardButton(text="Топ по карточкам", callback_data="top_cards_cards")
 		button_2 = InlineKeyboardButton(text="Топ по очкам", callback_data="top_cards_point")
-		inline_markup.add(url_button)
-		bot.send_message(message.chat.id, "Топ: Команда /knock.", reply_markup=inline_markup)
+			inline_markup.add(url_button)
+			bot.send_message(message.chat.id, "Топ: Команда /knock.", reply_markup=inline_markup)
 	except Exception as e:
 		bot.send_message(message.chat.id, "Временная ошибка в обработке, повтори позже.")
 
@@ -394,20 +394,21 @@ def cards_top_callback(message):
 	user_id = str(message.from_user.id)
 	user_data = data.get(user_id, {'points': 0, 'birds': []})
 	if choice == "cards":
+
 		sorted_data = sorted(data.items(), key=lambda x: len(x[1].get('birds', [])), reverse=True)
 		top_10 = sorted_data[:10]
-	
+
 		message_text = "Топ-10 пользователей по количеству собранных карточек:\n\n"
 		for i, (user_id, user_data) in enumerate(top_10, 1):
 			nickname = user_data.get('nickname', 'Unknown')
 			num_cards = len(user_data.get('birds', []))
 			message_text += f"{i}. {nickname}: {num_cards} карточек\n"
-	
+
 		bot.send_message(message.chat.id, message_text)
-  	else:
+	else:
 		sorted_data_points = sorted(data.items(), key=lambda x: x[1].get('points', 0), reverse=True)
 		top_10 = sorted_data_points[:10]
-	
+
 		message_text_2 = "Топ-10 пользователей по количеству собранных карточек:\n\n"
 		for j, (user_id, user_data) in enumerate(top_10, 1):
 			nickname_2 = user_data.get('nickname', 'Unknown')
