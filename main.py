@@ -247,30 +247,34 @@ def show_cards(call):
 
 
 def handle_stocoin(message):
-	try:
-		user_id = str(message.from_user.id)
-		first_name = message.from_user.first_name
-		coins_to_add = random.randint(1, 5)
-		current_time = time.time()
+    try:
+        user_id = str(message.from_user.id)
+        first_name = message.from_user.first_name
+        coins_to_add = random.randint(1, 5)
+        current_time = time.time()
 
-		try:
-			with open("stone_coin.json", 'r') as file:
-				data = json.load(file)
-		except FileNotFoundError:
-			data = {}
+        with open("user_coins.json", 'r') as file:
+            data = json.load(file)
 
-		last_request_time = data.get(user_id, {}).get("last_request_time", 0)
-		if current_time - last_request_time < 1200:
-			remaining_time = 300 - (current_time - last_request_time)
-			minutes, seconds = divmod(remaining_time, 60)
-			bot.reply_to(message, f"Вы уже получили кроны. Попробуйте через {int(minutes)} минут {int(seconds)} секунд.")
-			return
+        user_data = data.get(user_id, {"last_request_time": 0})
+        last_request_time = user_data.get("last_request_time", 0)
 
-		update_user_data(user_id, first_name, coins_to_add)
+        # Using 1200 seconds (20 minutes) as the limit between requests
+        if current_time - last_request_time < 1200:
+            remaining_time = 1200 - (current_time - last_request_time)
+            minutes, seconds = divmod(remaining_time, 60)
+            bot.reply_to(message, f"Вы уже получили кроны. Попробуйте через {int(minutes)} минут {int(seconds)} секунд.")
+            return
 
-		bot.reply_to(message, f"Вы успешно заработали {coins_to_add} золотых крон.")
-	except Exception as e:
-		bot.send_message(message.chat.id, f"Произошла ошибка: {e}")
+        update_user_data(user_id, first_name, coins_to_add)
+        data[user_id]["last_request_time"] = current_time  # Update the last request time
+
+        with open("user_coins.json", 'w') as file:
+            json.dump(data, file, indent=4)
+
+        bot.reply_to(message, f"Вы успешно заработали {coins_to_add} золотых крон.")
+    except Exception as e:
+        bot.send_message(message.chat.id, f"Произошла ошибка: {e}")
 
 def handle_shop(message):
 	try:
