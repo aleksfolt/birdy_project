@@ -305,7 +305,6 @@ def handle_stocoin(message):
 def handle_shop(message):
 	try:
 		user_id = str(message.from_user.id)
-		username = message.from_user.username
 		current_time = time.time()
 		unique_number = random.randint(1000, 99999999)
 		user_button[user_id] = unique_number
@@ -317,7 +316,7 @@ def handle_shop(message):
 			bot.send_message(message.chat.id, "Ошибка: данные пользователей не найдены.")
 			return
 
-		user_data = data.get(user_id, {})
+		user_data = data.get(user_id, {"coins": 0, "purchases": [], "last_request_time": 0})
 		coins = user_data.get("coins", 0)
 
 		last_request_time = user_data.get("last_request_time", 0)
@@ -334,6 +333,10 @@ def handle_shop(message):
 		for product_id, product_info in products.items():
 			button = types.InlineKeyboardButton(text=product_info["name"], callback_data=f"buy_{product_id}_{unique_number}")
 			markup.add(button)
+
+		# Debug output
+		print(f"Sending shop message to user {user_id} with balance: {coins}")
+
 		bot.send_message(message.chat.id, shop_message, reply_markup=markup)
 	except Exception as e:
 		bot.send_message(message.chat.id, f"Произошла ошибка {e} (напишите @AleksFolt)")
