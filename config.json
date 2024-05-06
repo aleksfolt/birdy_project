@@ -24,7 +24,11 @@
     {"rarity": "Легендарная", "name": "Бледный лунь", "place": "Сибирь", "photo": "images/bird_legendary_3.jpg", "points": "10000"},
     {"rarity": "Легендарная", "name": "Краснозобый ныряльщик", "place": "Сибирь", "photo": "images/bird_legendary_4.jpg", "points": "10000"},
     {"rarity": "Легендарная", "name": "Средиземноморская ржанка", "place": "Хайфский округ", "photo": "images/bird_legendary_5.jpg", "points": "10000"},
-    {"rarity": "Легендарная", "name": "Змееяд", "place": "Хайфский округ", "photo": "images/bird_legendary_6.jpg", "points": "10000"}
+    {"rarity": "Легендарная", "name": "Змееяд", "place": "Хайфский округ", "photo": "images/bird_legendary_6.jpg", "points": "10000"},
+    {"rarity": "Крутка", "name": "Птичка печенька", "place": "Конфетный лес", "photo": "images/bird_krutka.jpg"},
+    {"rarity": "Крутка", "name": "Птичка Круассан", "place": "Конфетный лес", "photo": "images/bird_krutka_2.jpg"},
+    {"rarity": "Крутка", "name": "Птичка тортик", "place": "Конфетный лес", "photo": "images/bird_krutka_3.jpg"},
+    {"rarity": "Крутка", "name": "Птичка зефирка", "place": "Конфетный лес", "photo": "images/bird_krutka_4.jpg"}
   ],
   "tea_names": [
     "Зеленый чай",
