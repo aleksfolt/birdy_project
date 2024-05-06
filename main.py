@@ -80,6 +80,7 @@ def start_command(message):
 /goods, "Покупки" - ваши покупки
 
 Полный список команд с описанием [тут](https://teletype.in/@hlb_folt/jNICgr9tP50).
+Создатель: @AleksFolt
 	'''
 	bot.send_message(message.chat.id, text, parse_mode='Markdown', disable_web_page_preview=True)
 
