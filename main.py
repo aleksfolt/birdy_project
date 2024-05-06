@@ -549,9 +549,11 @@ def buy_crutka(call):
 			user_data['points'] -= 35000
 			data[user_id] = user_data
 			save_data_2(data)
-			bot.send_message(call.message.chat.id, f"{user_nickname} Вам выпала {chosen_bird['name']}!")
+			photo_data = chosen_bird['photo']
+			with open(photo_data, 'rb') as photo_file:
+				bot.send_photo(call.message.chat.id, photo_file, caption=f"{user_nickname} Вам выпала {chosen_bird['name']}!")
 		else:
-			bot.send_message(call.message.chat.id, f"{user_nickname} Поздравляем!, вы собрали все крутки.")
+			bot.send_message(call.message.chat.id, f"{user_nickname} Вы уже собрали все крутки.")
 	else:
 		bot.send_message(call.message.chat.id, f"{user_nickname} Недостаточно очков для покупки!")
 
