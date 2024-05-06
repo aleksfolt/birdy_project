@@ -274,6 +274,7 @@ def handle_stocoin(message):
     first_name = message.from_user.first_name
     coins_to_add = random.randint(1, 15)
     current_time = time.time()
+	last_request_time = data.get(user_id, {}).get("last_request_time", 0)
 
     if current_time - last_request_time < 1200:
         remaining_time = 1200 - (current_time - last_request_time)
@@ -287,7 +288,6 @@ def handle_stocoin(message):
     except FileNotFoundError:
         data = {}
 
-    last_request_time = data.get(user_id, {}).get("last_request_time", 0)
     data[user_id] = data.get(user_id, {})
     data[user_id]["last_request_time"] = current_time
 
