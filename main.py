@@ -338,21 +338,20 @@ def handle_shop(message):
 
 @bot.callback_query_handler(func=lambda call: call.data.startswith('buy_'))
 def handle_buy_query(call):
-	unique_number = int(call.data.split('_')[2])
-	user_id = str(call.from_user.id)
-	unique_number_2 = random.randint(1000, 99999999)
-	user_button[user_id] = unique_number_2
-	print(unique_number)
-	if user_button.get(user_id) != unique_number:
-		bot.answer_callback_query(call.id, "Не ваша кнопка.", show_alert=True)
-		return
-	product_id = call.data.split('_')[1]
-	product = products[product_id]
-	markup = types.InlineKeyboardMarkup()
-	buy_button = types.InlineKeyboardButton(text="Купить", callback_data=f"confirm_{product_id}_{unique_number_2}")
-	markup.add(buy_button)
-	with open(product["image"], "rb") as photo:
-		bot.send_photo(call.message.chat.id, photo, caption=f"{product['name']} - Цена: {product['price']} крон.", reply_markup=markup)
+    product_id, unique_number = call.data.split('_')[1:3]
+    user_id = str(call.from_user.id)
+    
+    if user_button.get(user_id) != int(unique_number):
+        bot.answer_callback_query(call.id, "Не ваша кнопка.", show_alert=True)
+        return
+
+    product = products[product_id]
+    markup = types.InlineKeyboardMarkup()
+    buy_button = types.InlineKeyboardButton(text="Купить", callback_data=f"confirm_{product_id}_{unique_number}")
+    markup.add(buy_button)
+    
+    with open(product["image"], "rb") as photo:
+        bot.send_photo(call.message.chat.id, photo, caption=f"{product['name']} - Цена: {product['price']} крон.", reply_markup=markup)
 
 
 @bot.callback_query_handler(func=lambda call: call.data.startswith('confirm_'))
