@@ -276,7 +276,7 @@ def handle_stocoin(message):
         current_time = time.time()
 
         try:
-            with open(users_data, 'r') as file:
+            with open("user_coins.json", 'r') as file:
                 data = json.load(file)
         except FileNotFoundError:
             data = {}
@@ -292,13 +292,13 @@ def handle_stocoin(message):
         update_user_data(user_id, username, coins)
 
         # Обновление времени последнего запроса с учетом того, что пользователь точно существует
-        with open(users_data, 'r') as file:
+        with open("user_coins.json", 'r') as file:
             data = json.load(file)
         if user_id not in data:
             data[user_id] = {"username": username, "coins": coins, "purchases": [], "last_request_time": current_time}
         else:
             data[user_id]["last_request_time"] = current_time
-        with open(users_data, 'w') as file:
+        with open("user_coins.json", 'w') as file:
             json.dump(data, file, indent=4)
 
         bot.reply_to(message, f"Вы успешно заработали {coins} золотых крон.")
