@@ -1,4 +1,3 @@
-
 from telebot.types import ReplyKeyboardMarkup, KeyboardButton, InlineKeyboardMarkup, InlineKeyboardButton, WebAppInfo
 import telebot
 from telebot import types
@@ -253,62 +252,62 @@ def show_knock_cards(call):
 
 @bot.callback_query_handler(func=lambda call: call.data.startswith('show_'))
 def show_cards(call):
-    rarity = call.data[len('show_'):]
-    user_id = str(call.from_user.id)
-    user_nickname = call.from_user.first_name
-    data = load_data_cards()
-    user_data = data.get(user_id, {'birds': [], 'last_usage': 0, 'points': 0, 'nickname': user_nickname})
-    rarity_cards = [bird for bird in birds if bird['name'] in user_data['birds'] and bird['rarity'] == rarity]
+	rarity = call.data[len('show_'):]
+	user_id = str(call.from_user.id)
+	user_nickname = call.from_user.first_name
+	data = load_data_cards()
+	user_data = data.get(user_id, {'birds': [], 'last_usage': 0, 'points': 0, 'nickname': user_nickname})
+	rarity_cards = [bird for bird in birds if bird['name'] in user_data['birds'] and bird['rarity'] == rarity]
 
-    if rarity_cards:
-        for bird in rarity_cards:
-            photo_data = bird['photo']
-            caption = f"{bird['name']}\nРедкость: {bird['rarity']}"
-            if 'points' in bird:
-                caption += f"\nОчки: {bird['points']}"
-            caption += f"\nОбитание: {bird['place']}"
-            with open(photo_data, 'rb') as photo_file:
-                chat_type = call.message.chat.type
-                bot.send_photo(call.message.chat.id, photo_file, caption=caption)
-    else:
-        bot.send_message(call.message.chat.id, f"У вас нет карточек редкости {rarity}")
+	if rarity_cards:
+		for bird in rarity_cards:
+			photo_data = bird['photo']
+			caption = f"{bird['name']}\nРедкость: {bird['rarity']}"
+			if 'points' in bird:
+				caption += f"\nОчки: {bird['points']}"
+			caption += f"\nОбитание: {bird['place']}"
+			with open(photo_data, 'rb') as photo_file:
+				chat_type = call.message.chat.type
+				bot.send_photo(call.message.chat.id, photo_file, caption=caption)
+	else:
+		bot.send_message(call.message.chat.id, f"У вас нет карточек редкости {rarity}")
 
 
 def handle_stocoin(message):
-    try:
-        user_id = str(message.from_user.id)
-        username = message.from_user.username
-        current_time = time.time()
+	try:
+		user_id = str(message.from_user.id)
+		username = message.from_user.username
+		current_time = time.time()
 
-        try:
-            with open("user_coins.json", 'r') as file:
-                data = json.load(file)
-        except FileNotFoundError:
-            data = {}
+		try:
+			with open("user_coins.json", 'r') as file:
+				data = json.load(file)
+		except FileNotFoundError:
+			data = {}
 
-        last_request_time = data.get(user_id, {}).get("last_request_time", 0)
-        if current_time - last_request_time < 1500:  # 5 minutes cooldown
-            remaining_time = 1500 - (current_time - last_request_time)
-            minutes, seconds = divmod(remaining_time, 60)
-            bot.reply_to(message, f"Вы уже получили камень койны. Попробуйте через {int(minutes)} минут {int(seconds)} секунд.")
-            return
+		last_request_time = data.get(user_id, {}).get("last_request_time", 0)
+		if current_time - last_request_time < 1500:  # 5 minutes cooldown
+			remaining_time = 1500 - (current_time - last_request_time)
+			minutes, seconds = divmod(remaining_time, 60)
+			bot.reply_to(message, f"Вы уже получили камень койны. Попробуйте через {int(minutes)} минут {int(seconds)} секунд.")
+			return
 
-        coins = random.randint(1, 15)
-        update_user_data(user_id, username, coins)
+		coins = random.randint(1, 15)
+		update_user_data(user_id, username, coins)
 
-        with open("user_coins.json", 'r') as file:
-            data = json.load(file)
-        if user_id not in data:
-            data[user_id] = {"username": username, "coins": coins, "purchases": [], "last_request_time": current_time}
-        else:
-            data[user_id]["last_request_time"] = current_time
-        with open("user_coins.json", 'w') as file:
-            json.dump(data, file, indent=4)
+		with open("user_coins.json", 'r') as file:
+			data = json.load(file)
+		if user_id not in data:
+			data[user_id] = {"username": username, "coins": coins, "purchases": [], "last_request_time": current_time}
+		else:
+			data[user_id]["last_request_time"] = current_time
+		with open("user_coins.json", 'w') as file:
+			json.dump(data, file, indent=4)
 
-        bot.reply_to(message, f"Вы успешно заработали {coins} золотых крон.")
-    except Exception as e:
-        bot.send_message(message.chat.id, f"Временная ошибка в обработке, повторите позже!")
-        print(e)
+		bot.reply_to(message, f"Вы успешно заработали {coins} золотых крон.")
+	except Exception as e:
+		bot.send_message(message.chat.id, f"Временная ошибка в обработке, повторите позже!")
+		print(e)
 
 
 
@@ -517,8 +516,8 @@ def crutki(call):
 		bot.answer_callback_query(call.id, "Не ваша кнопка.", show_alert=True)
 		return
 	data = load_data_cards()
-    user_nickname = call.from_user.first_name
-    user_data = data.get(user_id, {'birds': [], 'last_usage': 0, 'points': 0, 'nickname': user_nickname})
+	user_nickname = call.from_user.first_name
+	user_data = data.get(user_id, {'birds': [], 'last_usage': 0, 'points': 0, 'nickname': user_nickname})
 	keyboard = telebot.types.InlineKeyboardMarkup(row_width=2)
 	button_1 = telebot.types.InlineKeyboardButton(text="Купить", callback_data=f'buying_crutka_{unique_number}')
 	keyboard.add(button_1)
@@ -527,34 +526,34 @@ def crutki(call):
 
 @bot.callback_query_handler(func=lambda call: call.data.startswith('buying_crutka'))
 def buy_crutka(call):
-    user_id = str(call.from_user.id)
-    unique_number = int(call.data.split('_')[-1])
-    if user_button.get(user_id) != unique_number:
-        bot.answer_callback_query(call.id, "Не ваша кнопка.", show_alert=True)
-        return
-    data = load_data_cards()
-    user_nickname = call.from_user.first_name
-    user_data = data.get(user_id, {'birds': [], 'last_usage': 0, 'points': 0, 'nickname': user_nickname})
-    if user_data['points'] >= 35000:
-        eligible_birds = [bird for bird in birds if bird["rarity"] == "Крутка"]
-        chosen_bird = None
-        attempt_count = 0
-        while attempt_count < 100:
-            chosen_bird = random.choice(eligible_birds)
-            if chosen_bird['name'] not in user_data['birds']:
-                break
-            attempt_count += 1
-        
-        if chosen_bird and chosen_bird['name'] not in user_data['birds']:
-            user_data['birds'].append(chosen_bird['name'])
-            user_data['points'] -= 35000
-            data[user_id] = user_data
-            save_data_2(data)
-            bot.send_message(call.message.chat.id, f"{user_nickname} Вам выпала {chosen_bird['name']}!")
-        else:
-            bot.send_message(call.message.chat.id, f"{user_nickname} Поздравляем!, вы собрали все крутки.")
-    else:
-        bot.send_message(call.message.chat.id, f"{user_nickname} Недостаточно очков для покупки!")
+	user_id = str(call.from_user.id)
+	unique_number = int(call.data.split('_')[-1])
+	if user_button.get(user_id) != unique_number:
+		bot.answer_callback_query(call.id, "Не ваша кнопка.", show_alert=True)
+		return
+	data = load_data_cards()
+	user_nickname = call.from_user.first_name
+	user_data = data.get(user_id, {'birds': [], 'last_usage': 0, 'points': 0, 'nickname': user_nickname})
+	if user_data['points'] >= 35000:
+		eligible_birds = [bird for bird in birds if bird["rarity"] == "Крутка"]
+		chosen_bird = None
+		attempt_count = 0
+		while attempt_count < 100:
+			chosen_bird = random.choice(eligible_birds)
+			if chosen_bird['name'] not in user_data['birds']:
+				break
+			attempt_count += 1
+		
+		if chosen_bird and chosen_bird['name'] not in user_data['birds']:
+			user_data['birds'].append(chosen_bird['name'])
+			user_data['points'] -= 35000
+			data[user_id] = user_data
+			save_data_2(data)
+			bot.send_message(call.message.chat.id, f"{user_nickname} Вам выпала {chosen_bird['name']}!")
+		else:
+			bot.send_message(call.message.chat.id, f"{user_nickname} Поздравляем!, вы собрали все крутки.")
+	else:
+		bot.send_message(call.message.chat.id, f"{user_nickname} Недостаточно очков для покупки!")
 
 
 
