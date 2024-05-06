@@ -1,3 +1,4 @@
+
 from telebot.types import ReplyKeyboardMarkup, KeyboardButton, InlineKeyboardMarkup, InlineKeyboardButton, WebAppInfo
 import telebot
 from telebot import types
@@ -80,7 +81,6 @@ def start_command(message):
 /goods, "Покупки" - ваши покупки
 
 Полный список команд с описанием [тут](https://teletype.in/@hlb_folt/jNICgr9tP50).
-Создатель: @AleksFolt
 	'''
 	bot.send_message(message.chat.id, text, parse_mode='Markdown', disable_web_page_preview=True)
 
@@ -253,21 +253,25 @@ def show_knock_cards(call):
 
 @bot.callback_query_handler(func=lambda call: call.data.startswith('show_'))
 def show_cards(call):
-	rarity = call.data[len('show_'):]
-	user_id = str(call.from_user.id)
-	user_nickname = call.from_user.first_name
-	data = load_data_cards()
-	user_data = data.get(user_id, {'birds': [], 'last_usage': 0, 'points': 0, 'nickname': user_nickname})
-	rarity_cards = [bird for bird in birds if bird['name'] in user_data['birds'] and bird['rarity'] == rarity]
+    rarity = call.data[len('show_'):]
+    user_id = str(call.from_user.id)
+    user_nickname = call.from_user.first_name
+    data = load_data_cards()
+    user_data = data.get(user_id, {'birds': [], 'last_usage': 0, 'points': 0, 'nickname': user_nickname})
+    rarity_cards = [bird for bird in birds if bird['name'] in user_data['birds'] and bird['rarity'] == rarity]
 
-	if rarity_cards:
-		for bird in rarity_cards:
-			photo_data = bird['photo']
-			with open(photo_data, 'rb') as photo_file:
-				chat_type = call.message.chat.type
-				bot.send_photo(call.message.chat.id, photo_file, caption=f"{bird['name']}\nРедкость: {bird['rarity']}\nОчки: {bird['points']}\nОбитание: {bird['place']}")
-	else:
-		bot.send_message(call.message.chat.id, f"У вас нет карточек редкости {rarity}")
+    if rarity_cards:
+        for bird in rarity_cards:
+            photo_data = bird['photo']
+            caption = f"{bird['name']}\nРедкость: {bird['rarity']}"
+            if 'points' in bird:
+                caption += f"\nОчки: {bird['points']}"
+            caption += f"\nОбитание: {bird['place']}"
+            with open(photo_data, 'rb') as photo_file:
+                chat_type = call.message.chat.type
+                bot.send_photo(call.message.chat.id, photo_file, caption=caption)
+    else:
+        bot.send_message(call.message.chat.id, f"У вас нет карточек редкости {rarity}")
 
 
 def handle_stocoin(message):
@@ -292,7 +296,6 @@ def handle_stocoin(message):
         coins = random.randint(1, 15)
         update_user_data(user_id, username, coins)
 
-        # Обновление времени последнего запроса с учетом того, что пользователь точно существует
         with open("user_coins.json", 'r') as file:
             data = json.load(file)
         if user_id not in data:
@@ -411,13 +414,13 @@ def cards_top(message):
 		inline_markup.add(button_1, button_2)
 		bot.send_message(message.chat.id, "Топ 10 пользователей по карточкам. Выберите кнопку:", reply_markup=inline_markup)
 	except Exception as e:
-		print(f"Error: {e}")  # Logging the error can help in debugging
+		print(f"Error: {e}")
 		bot.send_message(message.chat.id, "Временная ошибка в обработке, повтори позже.")
 
 
 @bot.callback_query_handler(func=lambda call: call.data.startswith('top_cards_'))
 def cards_top_callback(call):
-	choice = call.data.split('_')[2]  # Обратите внимание на индекс, возможно он должен быть 2
+	choice = call.data.split('_')[2]
 	data = load_data_cards()
 	user_id = str(call.message.from_user.id)
 	user_data = data.get(user_id, {'points': 0, 'birds': []})
@@ -500,9 +503,56 @@ def handle_profile(message, background_image_path="background_image.jpg"):
 		user_button[str_user_id] = unique_number
 		keyboard = telebot.types.InlineKeyboardMarkup(row_width=2)
 		button_1 = telebot.types.InlineKeyboardButton(text="Мои карточки", callback_data=f'show_cards_{unique_number}')
-		keyboard.add(button_1)
+		button_2 = telebot.types.InlineKeyboardButton(text="Купить крутку", callback_data=f'crutka_cards_{unique_number}')
+		keyboard.add(button_1, button_2)
 		bot.delete_message(message.chat.id, waiting.message_id)
 		bot.send_photo(message.chat.id, photo=final_image_stream, caption=caption, reply_markup=keyboard)
+
+
+@bot.callback_query_handler(func=lambda call: call.data.startswith(f'crutka_cards'))
+def crutki(call):
+	unique_number = int(call.data.split('_')[-1])
+	user_id = str(call.from_user.id)
+	if user_button.get(user_id) != unique_number:
+		bot.answer_callback_query(call.id, "Не ваша кнопка.", show_alert=True)
+		return
+	keyboard = telebot.types.InlineKeyboardMarkup(row_width=2)
+	button_1 = telebot.types.InlineKeyboardButton(text="Купить", callback_data=f'buying_crutka_{unique_number}')
+	keyboard.add(button_1)
+	bot.send_message(call.message.chat.id, "Купить крутку. Цена: 35000 поинтов:", reply_markup=keyboard)
+	
+
+@bot.callback_query_handler(func=lambda call: call.data.startswith('buying_crutka'))
+def buy_crutka(call):
+    user_id = str(call.from_user.id)
+    unique_number = int(call.data.split('_')[-1])
+    if user_button.get(user_id) != unique_number:
+        bot.answer_callback_query(call.id, "Не ваша кнопка.", show_alert=True)
+        return
+    data = load_data_cards()
+    user_nickname = call.from_user.first_name
+    user_data = data.get(user_id, {'birds': [], 'last_usage': 0, 'points': 0, 'nickname': user_nickname})
+    if user_data['points'] >= 35000:
+        eligible_birds = [bird for bird in birds if bird["rarity"] == "Крутка"]
+        chosen_bird = None
+        attempt_count = 0
+        while attempt_count < 100:
+            chosen_bird = random.choice(eligible_birds)
+            if chosen_bird['name'] not in user_data['birds']:
+                break
+            attempt_count += 1
+        
+        if chosen_bird and chosen_bird['name'] not in user_data['birds']:
+            user_data['birds'].append(chosen_bird['name'])
+            user_data['points'] -= 35000
+            data[user_id] = user_data
+            save_data_2(data)
+            bot.send_message(call.message.chat.id, f"Вам выпала {chosen_bird['name']}!")
+        else:
+            bot.send_message(call.message.chat.id, "Поздравляем!, вы собрали все крутки.")
+    else:
+        bot.send_message(call.message.chat.id, "Недостаточно очков для покупки!")
+
 
 
 @bot.message_handler(func=lambda message: True)
@@ -524,6 +574,7 @@ def handle_text(message):
 				handle_profile(message)
 			elif message.text == "/cards_top" or message.text == "Топ карточек" or message.text == "топ карточек":
 				cards_top(message)
+			
 	except Exception as e:
 			bot.send_message(message.chat.id, "Временная ошибка в обработке, повторите позже.")
 			bot.send_message(1130692453, f"Произошла ошибка при обработке команды: в чате: {message.chat.id}. Ошибка: {e}")
