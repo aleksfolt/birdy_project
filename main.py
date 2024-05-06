@@ -85,23 +85,23 @@ def start_command(message):
 
 
 def update_user_data(user_id, username, coins=0, purchase=None, last_request_time=None):
-    try:
-        with open("user_coins.json", 'r') as file:
-            data = json.load(file)
-    except FileNotFoundError:
-        data = {}
+	try:
+		with open("user_coins.json", 'r') as file:
+			data = json.load(file)
+	except FileNotFoundError:
+		data = {}
 
-    if user_id not in data:
-        data[user_id] = {"username": username, "coins": 0, "purchases": [], "last_request_time": 0}
+	if user_id not in data:
+		data[user_id] = {"username": username, "coins": 0, "purchases": [], "last_request_time": 0}
 
-    data[user_id]['coins'] += coins
-    if purchase:
-        data[user_id]['purchases'].append(purchase)
-    if last_request_time is not None:
-        data[user_id]['last_request_time'] = last_request_time
+	data[user_id]['coins'] += coins
+	if purchase:
+		data[user_id]['purchases'].append(purchase)
+	if last_request_time is not None:
+		data[user_id]['last_request_time'] = last_request_time
 
-    with open("user_coins.json", 'w') as file:
-        json.dump(data, file, indent=4)
+	with open("user_coins.json", 'w') as file:
+		json.dump(data, file, indent=4)
 
 
 def chai_top(message):
@@ -270,32 +270,32 @@ def show_cards(call):
 
 
 def handle_stocoin(message):
-    user_id = str(message.from_user.id)
-    first_name = message.from_user.first_name
-    coins_to_add = random.randint(1, 15)
-    current_time = time.time()
+	user_id = str(message.from_user.id)
+	first_name = message.from_user.first_name
+	coins_to_add = random.randint(1, 15)
+	current_time = time.time()
 	last_request_time = data.get(user_id, {}).get("last_request_time", 0)
 
-    if current_time - last_request_time < 1200:
-        remaining_time = 1200 - (current_time - last_request_time)
-        minutes, seconds = divmod(remaining_time, 60)
-        bot.reply_to(message, f"Вы уже получили кроны. Попробуйте через {int(minutes)} минут {int(seconds)} секунд.")
-        return
+	if current_time - last_request_time < 1200:
+		remaining_time = 1200 - (current_time - last_request_time)
+		minutes, seconds = divmod(remaining_time, 60)
+		bot.reply_to(message, f"Вы уже получили кроны. Попробуйте через {int(minutes)} минут {int(seconds)} секунд.")
+		return
 
-    try:
-        with open("stone_coin.json", 'r') as file:
-            data = json.load(file)
-    except FileNotFoundError:
-        data = {}
+	try:
+		with open("stone_coin.json", 'r') as file:
+			data = json.load(file)
+	except FileNotFoundError:
+		data = {}
 
-    data[user_id] = data.get(user_id, {})
-    data[user_id]["last_request_time"] = current_time
+	data[user_id] = data.get(user_id, {})
+	data[user_id]["last_request_time"] = current_time
 
-    with open("stone_coin.json", 'w') as file:
-        json.dump(data, file, indent=4)
+	with open("stone_coin.json", 'w') as file:
+		json.dump(data, file, indent=4)
 
-    update_user_data(user_id, first_name, coins_to_add, last_request_time=current_time)
-    bot.reply_to(message, f"Вы успешно заработали {coins_to_add} золотых крон.")
+	update_user_data(user_id, first_name, coins_to_add, last_request_time=current_time)
+	bot.reply_to(message, f"Вы успешно заработали {coins_to_add} золотых крон.")
 
 
 def handle_shop(message):
@@ -338,20 +338,20 @@ def handle_shop(message):
 
 @bot.callback_query_handler(func=lambda call: call.data.startswith('buy_'))
 def handle_buy_query(call):
-    product_id, unique_number = call.data.split('_')[1:3]
-    user_id = str(call.from_user.id)
-    
-    if user_button.get(user_id) != int(unique_number):
-        bot.answer_callback_query(call.id, "Не ваша кнопка.", show_alert=True)
-        return
+	product_id, unique_number = call.data.split('_')[1:3]
+	user_id = str(call.from_user.id)
+	
+	if user_button.get(user_id) != int(unique_number):
+		bot.answer_callback_query(call.id, "Не ваша кнопка.", show_alert=True)
+		return
 
-    product = products[product_id]
-    markup = types.InlineKeyboardMarkup()
-    buy_button = types.InlineKeyboardButton(text="Купить", callback_data=f"confirm_{product_id}_{unique_number}")
-    markup.add(buy_button)
-    
-    with open(product["image"], "rb") as photo:
-        bot.send_photo(call.message.chat.id, photo, caption=f"{product['name']} - Цена: {product['price']} крон.", reply_markup=markup)
+	product = products[product_id]
+	markup = types.InlineKeyboardMarkup()
+	buy_button = types.InlineKeyboardButton(text="Купить", callback_data=f"confirm_{product_id}_{unique_number}")
+	markup.add(buy_button)
+	
+	with open(product["image"], "rb") as photo:
+		bot.send_photo(call.message.chat.id, photo, caption=f"{product['name']} - Цена: {product['price']} крон.", reply_markup=markup)
 
 
 @bot.callback_query_handler(func=lambda call: call.data.startswith('confirm_'))
