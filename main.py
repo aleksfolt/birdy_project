@@ -84,22 +84,24 @@ def start_command(message):
 	bot.send_message(message.chat.id, text, parse_mode='Markdown', disable_web_page_preview=True)
 
 
-def update_user_data(user_id, username, coins=0, purchase=None):
-	try:
-		with open("user_coins.json", 'r') as file:
-			data = json.load(file)
-	except FileNotFoundError:
-		data = {}
+def update_user_data(user_id, username, coins=0, purchase=None, last_request_time=None):
+    try:
+        with open("user_coins.json", 'r') as file:
+            data = json.load(file)
+    except FileNotFoundError:
+        data = {}
 
-	if user_id not in data:
-		data[user_id] = {"username": username, "coins": 0, "purchases": [], "last_request_time": 0}
+    if user_id not in data:
+        data[user_id] = {"username": username, "coins": 0, "purchases": [], "last_request_time": 0}
 
-	data[user_id]['coins'] += coins
-	if purchase:
-		data[user_id]['purchases'].append(purchase)
+    data[user_id]['coins'] += coins
+    if purchase:
+        data[user_id]['purchases'].append(purchase)
+    if last_request_time is not None:
+        data[user_id]['last_request_time'] = last_request_time
 
-	with open("user_coins.json", 'w') as file:
-		json.dump(data, file, indent=4)
+    with open("user_coins.json", 'w') as file:
+        json.dump(data, file, indent=4)
 
 
 def chai_top(message):
@@ -279,12 +281,10 @@ def handle_stocoin(message):
     except FileNotFoundError:
         data = {}
 
-    # Retrieve the last request time and update it in every call
     last_request_time = data.get(user_id, {}).get("last_request_time", 0)
     data[user_id] = data.get(user_id, {})
-    data[user_id]["last_request_time"] = current_time  # Update the time on every request
+    data[user_id]["last_request_time"] = current_time
 
-    # Save the updated data back to the file
     with open("stone_coin.json", 'w') as file:
         json.dump(data, file, indent=4)
 
@@ -294,8 +294,7 @@ def handle_stocoin(message):
         bot.reply_to(message, f"Вы уже получили кроны. Попробуйте через {int(minutes)} минут {int(seconds)} секунд.")
         return
 
-    # If the user waited long enough, proceed to add coins
-    update_user_data(user_id, first_name, coins_to_add)
+    update_user_data(user_id, first_name, coins_to_add, last_request_time=current_time)
     bot.reply_to(message, f"Вы успешно заработали {coins_to_add} золотых крон.")
 
 
