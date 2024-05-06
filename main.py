@@ -270,32 +270,41 @@ def show_cards(call):
 
 
 def handle_stocoin(message):
-    user_id = str(message.from_user.id)
-    first_name = message.from_user.first_name
-    coins_to_add = random.randint(1, 15)
-    current_time = time.time()
-    
     try:
-        with open("stone_coin.json", 'r') as file:
+        user_id = str(message.from_user.id)
+        username = message.from_user.username
+        current_time = time.time()
+
+        try:
+            with open(users_data, 'r') as file:
+                data = json.load(file)
+        except FileNotFoundError:
+            data = {}
+
+        last_request_time = data.get(user_id, {}).get("last_request_time", 0)
+        if current_time - last_request_time < 1500:  # 5 minutes cooldown
+            remaining_time = 1500 - (current_time - last_request_time)
+            minutes, seconds = divmod(remaining_time, 60)
+            bot.reply_to(message, f"Вы уже получили камень койны. Попробуйте через {int(minutes)} минут {int(seconds)} секунд.")
+            return
+
+        coins = random.randint(1, 15)
+        update_user_data(user_id, username, coins)
+
+        # Обновление времени последнего запроса с учетом того, что пользователь точно существует
+        with open(users_data, 'r') as file:
             data = json.load(file)
-    except FileNotFoundError:
-        data = {}
+        if user_id not in data:
+            data[user_id] = {"username": username, "coins": coins, "purchases": [], "last_request_time": current_time}
+        else:
+            data[user_id]["last_request_time"] = current_time
+        with open(users_data, 'w') as file:
+            json.dump(data, file, indent=4)
 
-    last_request_time = data.get(user_id, {}).get("last_request_time", 0)
+        bot.reply_to(message, f"Вы успешно заработали {coins} золотых крон.")
+    except Exception as e:
+        bot.send_message(message.chat.id, f"Временная ошибка в обработке, повторите позже!")
 
-    data.setdefault(user_id, {})["last_request_time"] = current_time
-
-    if current_time - last_request_time < 1200:
-        remaining_time = 1200 - (current_time - last_request_time)
-        minutes, seconds = divmod(remaining_time, 60)
-        bot.reply_to(message, f"Вы уже получили кроны. Попробуйте через {int(minutes)} минут {int(seconds)} секунд.")
-        return
-
-    data[user_id]["coins"] = data[user_id].get("coins", 0) + coins_to_add
-    with open("stone_coin.json", 'w') as file:
-        json.dump(data, file, indent=4)
-    
-    bot.reply_to(message, f"Вы успешно заработали {coins_to_add} золотых крон.")
 
 
 def handle_shop(message):
