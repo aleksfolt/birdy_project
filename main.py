@@ -289,7 +289,7 @@ def handle_stocoin(message):
 		if current_time - last_request_time < 1500:  # 5 minutes cooldown
 			remaining_time = 1500 - (current_time - last_request_time)
 			minutes, seconds = divmod(remaining_time, 60)
-			bot.reply_to(message, f"Вы уже получили камень койны. Попробуйте через {int(minutes)} минут {int(seconds)} секунд.")
+			bot.reply_to(message, f"Вы уже получили кроны. Попробуйте через {int(minutes)} минут {int(seconds)} секунд.")
 			return
 
 		coins = random.randint(1, 15)
