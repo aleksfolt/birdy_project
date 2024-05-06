@@ -275,6 +275,12 @@ def handle_stocoin(message):
     coins_to_add = random.randint(1, 15)
     current_time = time.time()
 
+    if current_time - last_request_time < 1200:
+        remaining_time = 1200 - (current_time - last_request_time)
+        minutes, seconds = divmod(remaining_time, 60)
+        bot.reply_to(message, f"Вы уже получили кроны. Попробуйте через {int(minutes)} минут {int(seconds)} секунд.")
+        return
+
     try:
         with open("stone_coin.json", 'r') as file:
             data = json.load(file)
@@ -287,12 +293,6 @@ def handle_stocoin(message):
 
     with open("stone_coin.json", 'w') as file:
         json.dump(data, file, indent=4)
-
-    if current_time - last_request_time < 1200:
-        remaining_time = 1200 - (current_time - last_request_time)
-        minutes, seconds = divmod(remaining_time, 60)
-        bot.reply_to(message, f"Вы уже получили кроны. Попробуйте через {int(minutes)} минут {int(seconds)} секунд.")
-        return
 
     update_user_data(user_id, first_name, coins_to_add, last_request_time=current_time)
     bot.reply_to(message, f"Вы успешно заработали {coins_to_add} золотых крон.")
