@@ -328,7 +328,7 @@ def handle_shop(message):
 		coins = user_data.get("coins", 0)
 
 		last_request_time = user_data.get("last_request_time", 0)
-		remaining_time = max(0, 300 - (current_time - last_request_time))
+		remaining_time = max(0, 1500 - (current_time - last_request_time))
 		minutes, seconds = divmod(remaining_time, 60)
 
 		if remaining_time > 0:
