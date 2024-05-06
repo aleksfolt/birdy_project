@@ -359,7 +359,7 @@ def handle_buy_query(call):
 def confirm_purchase(call):
 	user_id = str(call.from_user.id)
 	product_id = call.data.split('_')[1]
-	unique_number = call.data.split('_')[2]
+	unique_number = int(call.data.split('_')[2])
 	product = products[product_id]
 	if user_button.get(user_id) != unique_number:
 		bot.answer_callback_query(call.id, "Не ваша кнопка.", show_alert=True)
