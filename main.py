@@ -271,7 +271,7 @@ def handle_stocoin(message):
 	try:
 		user_id = str(message.from_user.id)
 		first_name = message.from_user.first_name
-		coins_to_add = random.randint(1, 5)
+		coins_to_add = random.randint(1, 15)
 		current_time = time.time()
 
 		try:
@@ -318,7 +318,7 @@ def handle_shop(message):
 		else:
 			time_message = ""
 
-		shop_message = f"Ваш текущий баланс: {coins} камень койнов." + time_message + "\nВыберите товар:"
+		shop_message = f"Ваш текущий баланс: {coins} кроны." + time_message + "\nВыберите товар:"
 		markup = types.InlineKeyboardMarkup(row_width=8)
 		for product_id, product_info in products.items():
 			button = types.InlineKeyboardButton(text=product_info["name"], callback_data=f"buy_{product_id}")
@@ -342,7 +342,7 @@ def handle_buy_query(call):
 	buy_button = types.InlineKeyboardButton(text="Купить", callback_data=f"confirm_{product_id}")
 	markup.add(buy_button)
 	with open(product["image"], "rb") as photo:
-		bot.send_photo(call.message.chat.id, photo, caption=f"{product['name']} - Цена: {product['price']} камень койнов", reply_markup=markup)
+		bot.send_photo(call.message.chat.id, photo, caption=f"{product['name']} - Цена: {product['price']} крон.", reply_markup=markup)
 
 
 @bot.callback_query_handler(func=lambda call: call.data.startswith('confirm_'))
