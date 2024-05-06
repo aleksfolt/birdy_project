@@ -304,6 +304,7 @@ def handle_stocoin(message):
         bot.reply_to(message, f"Вы успешно заработали {coins} золотых крон.")
     except Exception as e:
         bot.send_message(message.chat.id, f"Временная ошибка в обработке, повторите позже!")
+        print(e)
 
 
 
