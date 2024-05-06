@@ -276,11 +276,11 @@ def handle_stocoin(message):
 
 		with open("user_coins.json", 'r') as file:
 			data = json.load(file)
-
+        	if user_id not in data:
+            		data[user_id] = {"coins": 0, "purchases": [], "last_request_time": 0}
 		user_data = data.get(user_id, {"last_request_time": 0})
 		last_request_time = user_data.get("last_request_time", 0)
 
-		# Using 1200 seconds (20 minutes) as the limit between requests
 		if current_time - last_request_time < 1200:
 			remaining_time = 1200 - (current_time - last_request_time)
 			minutes, seconds = divmod(remaining_time, 60)
@@ -288,7 +288,7 @@ def handle_stocoin(message):
 			return
 
 		update_user_data(user_id, first_name, coins_to_add)
-		data[user_id]["last_request_time"] = current_time  # Update the last request time
+		data[user_id]["last_request_time"] = current_time
 
 		with open("user_coins.json", 'w') as file:
 			json.dump(data, file, indent=4)
