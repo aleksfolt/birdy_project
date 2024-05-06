@@ -85,25 +85,21 @@ def start_command(message):
 
 
 def update_user_data(user_id, username, coins=0, purchase=None):
-    try:
-        with open("user_coins.json", 'r') as file:
-            data = json.load(file)
-    except (FileNotFoundError, json.JSONDecodeError):
-        data = {}
+	try:
+		with open("user_coins.json", 'r') as file:
+			data = json.load(file)
+	except FileNotFoundError:
+		data = {}
 
-    if user_id not in data:
-        data[user_id] = {"username": username, "coins": 0, "purchases": [], "last_request_time": 0}
+	if user_id not in data:
+		data[user_id] = {"username": username, "coins": 0, "purchases": [], "last_request_time": 0}
 
-    data[user_id]['coins'] += coins
-    if purchase:
-        data[user_id]['purchases'].append(purchase)
-    print(f"Data to be saved: {data[user_id]}")
-    try:
-        with open("user_coins.json", 'w') as file:
-            json.dump(data, file, indent=4)
-        print("Data successfully saved.")
-    except Exception as e:
-        print(f"Failed to save data: {e}")
+	data[user_id]['coins'] += coins
+	if purchase:
+		data[user_id]['purchases'].append(purchase)
+
+	with open("user_coins.json", 'w') as file:
+		json.dump(data, file, indent=4)
 
 
 def chai_top(message):
@@ -272,42 +268,36 @@ def show_cards(call):
 
 
 def handle_stocoin(message):
-    try:
-        user_id = str(message.from_user.id)
-        first_name = message.from_user.first_name
-        coins_to_add = random.randint(1, 15)
-        current_time = time.time()
+	try:
+		user_id = str(message.from_user.id)
+		first_name = message.from_user.first_name
+		coins_to_add = random.randint(1, 5)
+		current_time = time.time()
 
-        try:
-            with open("user_coins.json", 'r') as file:
-                data = json.load(file)
-        except (FileNotFoundError, json.JSONDecodeError):
-            data = {}
+		try:
+			with open("stone_coin.json", 'r') as file:
+				data = json.load(file)
+		except FileNotFoundError:
+			data = {}
 
-        user_data = data.setdefault(user_id, {"coins": 0, "purchases": [], "last_request_time": 0})
+		last_request_time = data.get(user_id, {}).get("last_request_time", 0)
+		if current_time - last_request_time < 1200:
+			remaining_time = 300 - (current_time - last_request_time)
+			minutes, seconds = divmod(remaining_time, 60)
+			bot.reply_to(message, f"Вы уже получили кроны. Попробуйте через {int(minutes)} минут {int(seconds)} секунд.")
+			return
 
-        if current_time - user_data["last_request_time"] < 1200:
-            remaining_time = 1200 - (current_time - user_data["last_request_time"])
-            minutes, seconds = divmod(remaining_time, 60)
-            bot.reply_to(message, f"Вы уже получили кроны. Попробуйте через {int(minutes)} минут {int(seconds)} секунд.")
-            return
+		update_user_data(user_id, first_name, coins_to_add)
 
-        update_user_data(user_id, first_name, coins_to_add)
-        data[user_id]["last_request_time"] = current_time
-
-        with open("user_coins.json", 'w') as file:
-            json.dump(data, file, indent=4)
-        bot.reply_to(message, f"Вы успешно заработали {coins_to_add} золотых крон.")
-    except Exception as e:
-        bot.send_message(message.chat.id, f"Произошла ошибка: {e}")
-
+		bot.reply_to(message, f"Вы успешно заработали {coins_to_add} золотых крон.")
+	except Exception as e:
+		bot.send_message(message.chat.id, f"Произошла ошибка: {e}")
 
 def handle_shop(message):
 	try:
 		user_id = str(message.from_user.id)
+		username = message.from_user.username
 		current_time = time.time()
-		unique_number = random.randint(1000, 99999999)
-		user_button[user_id] = unique_number
 
 		try:
 			with open("user_coins.json", 'r') as file:
@@ -316,7 +306,7 @@ def handle_shop(message):
 			bot.send_message(message.chat.id, "Ошибка: данные пользователей не найдены.")
 			return
 
-		user_data = data.get(user_id, {"coins": 0, "purchases": [], "last_request_time": 0})
+		user_data = data.get(user_id, {})
 		coins = user_data.get("coins", 0)
 
 		last_request_time = user_data.get("last_request_time", 0)
@@ -331,12 +321,8 @@ def handle_shop(message):
 		shop_message = f"Ваш текущий баланс: {coins} камень койнов." + time_message + "\nВыберите товар:"
 		markup = types.InlineKeyboardMarkup(row_width=8)
 		for product_id, product_info in products.items():
-			button = types.InlineKeyboardButton(text=product_info["name"], callback_data=f"buy_{product_id}_{unique_number}")
+			button = types.InlineKeyboardButton(text=product_info["name"], callback_data=f"buy_{product_id}")
 			markup.add(button)
-
-		# Debug output
-		print(f"Sending shop message to user {user_id} with balance: {coins}")
-
 		bot.send_message(message.chat.id, shop_message, reply_markup=markup)
 	except Exception as e:
 		bot.send_message(message.chat.id, f"Произошла ошибка {e} (напишите @AleksFolt)")
