@@ -334,10 +334,10 @@ def handle_shop(message):
 @bot.callback_query_handler(func=lambda call: call.data.startswith('buy_'))
 def handle_buy_query(call):
 	unique_number = int(call.data.split('_')[2])
+	user_id = str(call.from_user.id)
 	unique_number_2 = random.randint(1000, 99999999)
 	user_button[user_id] = unique_number
 	print(unique_number)
-	user_id = str(call.from_user.id)
 	if user_button.get(user_id) != unique_number:
 		bot.answer_callback_query(call.id, "Не ваша кнопка.", show_alert=True)
 		return
