@@ -269,33 +269,28 @@ def show_cards(call):
 		bot.send_message(call.message.chat.id, f"У вас нет карточек редкости {rarity}")
 
 
-def handle_stocoin(message, bot):
+def handle_stocoin(message):
     user_id = str(message.from_user.id)
     first_name = message.from_user.first_name
     coins_to_add = random.randint(1, 15)
     current_time = time.time()
     
-    # Initialize data from file or as an empty dictionary if file not found
     try:
         with open("stone_coin.json", 'r') as file:
             data = json.load(file)
     except FileNotFoundError:
         data = {}
 
-    # Get last request time from data, or set to 0 if not present
     last_request_time = data.get(user_id, {}).get("last_request_time", 0)
-    
-    # Update data dictionary with current time
+
     data.setdefault(user_id, {})["last_request_time"] = current_time
 
-    # Check if request is too soon
     if current_time - last_request_time < 1200:
         remaining_time = 1200 - (current_time - last_request_time)
         minutes, seconds = divmod(remaining_time, 60)
         bot.reply_to(message, f"Вы уже получили кроны. Попробуйте через {int(minutes)} минут {int(seconds)} секунд.")
         return
 
-    # Update user data and respond
     data[user_id]["coins"] = data[user_id].get("coins", 0) + coins_to_add
     with open("stone_coin.json", 'w') as file:
         json.dump(data, file, indent=4)
