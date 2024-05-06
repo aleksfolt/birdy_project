@@ -513,4 +513,7 @@ def handle_text(message):
 			bot.send_message(message.chat.id, "Временная ошибка в обработке, повторите позже.")
 			bot.send_message(1130692453, f"Произошла ошибка при обработке команды: в чате: {message.chat.id}. Ошибка: {e}")
 
-bot.polling()
+try:
+	bot.infinity_polling()
+except Exception as e:
+	print(f"Ошибка {e}")
