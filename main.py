@@ -292,7 +292,7 @@ def handle_stocoin(message):
 			bot.reply_to(message, f"Вы уже получили кроны. Попробуйте через {int(minutes)} минут {int(seconds)} секунд.")
 			return
 
-		coins = random.randint(1, 15)
+		coins = random.randint(1, 10)
 		update_user_data(user_id, username, coins)
 
 		with open("user_coins.json", 'r') as file:
