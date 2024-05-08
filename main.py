@@ -114,7 +114,21 @@ def chai_top(message):
 		for i, (user_id, user_data) in enumerate(top_10, 1):
 			nickname = user_data.get('nickname', 'Unknown')
 			total_volume = user_data['total_volume']
-			message_text += f"{i}. {nickname}: {total_volume} мл\n"
+
+			if i == 1:
+				comment = " - Король"
+			elif 2 <= i <= 3:
+				comment = " - Герцог"
+			elif 4 <= i <= 5:
+				comment = " - Маркиз"
+			elif 6 <= i <= 7:
+				comment = " - Граф"
+			elif 8 <= i <= 9:
+				comment = " - Виконт"
+			elif i == 10:
+				comment = " - Барон"
+
+			message_text += f"{i}. {nickname}: {total_volume} мл. {comment}\n"
 
 		bot.send_message(message.chat.id, message_text)
 	except Exception as e:
@@ -195,7 +209,7 @@ def knock_cards_function(message):
 		photo_data = chosen_bird['photo']
 		if chosen_bird['name'] in user_data['birds']:
 			with open(photo_data, 'rb') as photo_file:
-				bot.send_photo(message.chat.id, photo_file, caption=f"Вам попалась повторка {chosen_bird['name']}! Будут начислены только очки.\nРедкость: {chosen_bird['rarity']}\nОчки: {chosen_bird['points']}\nОбитание: {chosen_bird['place']}")
+				bot.send_photo(message.chat.id, photo_file, caption=f"Вам попалась повторка {chosen_bird['name']}! Будут начислены только очки.\nРедкость: {chosen_bird['rarity']}\n+{chosen_bird['points']} очков.\nОбитание: {chosen_bird['place']}\n\nВсего поинтов: {user_data['points']}")
 			user_data['points'] += int(chosen_bird['points'])
 		else:
 			with open(photo_data, 'rb') as photo_file:
