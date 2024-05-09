@@ -216,10 +216,9 @@ def knock_cards_function(message):
 				bot.send_photo(message.chat.id, photo_file, caption=f"Из ваших наблюдений вы открыли новую птицу: {chosen_bird['name']}\nРедкость: {chosen_bird['rarity']}\nОчки: {chosen_bird['points']}\nОбитание: {chosen_bird['place']}")
 			user_data['birds'].append(chosen_bird['name'])
 			user_data['points'] += int(chosen_bird['points'])
-
-			user_data['last_usage'] = time.time()
-			data[user_id] = user_data
-			save_data_2(data)
+		user_data['last_usage'] = time.time()
+		data[user_id] = user_data
+		save_data_2(data)
 
 		if "Хлеб, Описание: повышение шансов на легендарную птичку." in inventory:
 			inventory.remove("Хлеб, Описание: повышение шансов на легендарную птичку.")
