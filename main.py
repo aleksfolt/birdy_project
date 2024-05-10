@@ -626,6 +626,27 @@ def promocode(message):
 
 
 
+def send_files(chat_id, filenames):
+    for filename in filenames:
+        try:
+            with open(filename, 'rb') as file:
+                bot.send_document(chat_id, file)
+        except Exception as e:
+            bot.send_message(chat_id, f"Не удалось отправить файл {filename}: {e}")
+
+@bot.message_handler(commands=['admin_send_files'])
+def handle_send_files(message):
+    try:
+        filenames = message.text.split()[1:]
+        if len(filenames) == 0:
+            bot.reply_to(message, "Пожалуйста, укажите имена файлов для отправки.")
+            return
+        send_files(message.chat.id, filenames)
+    except Exception as e:
+        bot.reply_to(message, f"Ошибка: {e}")
+
+
+
 @bot.message_handler(func=lambda message: True)
 def handle_text(message):
 	try:
