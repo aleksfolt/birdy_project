@@ -22,6 +22,7 @@ telebot.apihelper.READ_TIMEOUT = 60
 
 DATA_FILE = 'tea_data_2.json'
 DATA_FILE_2 = 'users_cards.json'
+DATA_FILE_3 = "promo.json"
 tea_names = сonfig_data['tea_names']
 birds = сonfig_data['birds']
 products = сonfig_data['products']
@@ -29,6 +30,10 @@ user_button = {}
 
 if not path.exists(DATA_FILE):
 	with open(DATA_FILE, 'w') as f:
+		json.dump({}, f)
+
+if not path.exists(DATA_FILE_3):
+	with open(DATA_FILE_3, 'w') as f:
 		json.dump({}, f)
 
 if not path.exists(DATA_FILE_2):
@@ -571,6 +576,55 @@ def buy_crutka(call):
 		bot.send_message(call.message.chat.id, f"{user_nickname} Недостаточно очков для покупки!")
 
 
+def promocode(message):
+	try:
+		user_id = str(message.from_user.id)
+		user_nickname = message.from_user.first_name
+		data_chai = load_data()
+		data_cards = load_data_cards()
+		total_volume = data_chai.get(user_id, {'total_volume': 0, 'last_drink_time': 0})
+		promo_1 = "ORMPRO782"
+		promo_2 = "EDOCEPRM148"
+
+		with open('promo.json', 'r') as json_file:
+			data = json.load(json_file)
+
+		if message.text == promo_1:
+			if user_id in data and data[user_id] == promo_1:
+				bot.send_message(message.chat.id, "Вы уже активировали этот промокод!")
+			else:
+				if 'nickname' not in total_volume:
+					total_volume['nickname'] = user_nickname
+				random_volume = random.randint(2000, 3000)
+				data_chai[user_id] = {'total_volume': total_volume['total_volume'] + random_volume, 'last_drink_time': time.time(), 'nickname': user_nickname}
+				save_data(data_chai)
+				data[user_id] = promo_1
+				with open('promo.json', 'w') as json_file:
+					json.dump(data, json_file)
+				bot.reply_to(message, f"Вы успешно активировали промокод! И получили {random_volume} мл. чая!")
+
+		elif message.text == promo_2:
+			if user_id in data and data[user_id] == promo_2:
+				bot.send_message(message.chat.id, "Вы уже активировали этот промокод!")
+			else:
+				if user_id in data_cards:
+					user_data_cards = data_cards[user_id]
+					time_since_last_usage = time.time() - user_data_cards.get('last_usage', time.time())
+					if time_since_last_usage >= 21600 or user_data_cards.get('last_usage', 0) == 0:
+						bot.reply_to(message, "Откройте карточку прежде чем использовать промокод!")
+					else:
+						user_data_cards['last_usage'] = 0
+						save_data_2(data_cards)
+						data[user_id] = promo_2
+						with open('promo.json', 'w') as json_file:
+							json.dump(data, json_file)
+						bot.reply_to(message, "Вы успешно активировали промокод! Лимит на открытие одной карточки обнулен!")
+				else:
+					bot.reply_to(message, "Откройте карточку прежде чем использовать промокод!")
+	except Exception as e:
+		print(e)
+
+
 
 @bot.message_handler(func=lambda message: True)
 def handle_text(message):
@@ -591,7 +645,8 @@ def handle_text(message):
 				handle_profile(message)
 			elif message.text == "/cards_top" or message.text == "Топ карточек" or message.text == "топ карточек":
 				cards_top(message)
-			
+			elif message.text == "ORMPRO782" or message.text == "EDOCEPRM148":
+				promocode(message)
 	except Exception as e:
 			bot.send_message(message.chat.id, "Временная ошибка в обработке, повторите позже.")
 			bot.send_message(1130692453, f"Произошла ошибка при обработке команды: в чате: {message.chat.id}. Ошибка: {e}")
