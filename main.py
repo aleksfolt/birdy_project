@@ -214,7 +214,7 @@ def knock_cards_function(message):
 		photo_data = chosen_bird['photo']
 		if chosen_bird['name'] in user_data['birds']:
 			with open(photo_data, 'rb') as photo_file:
-				bot.send_photo(message.chat.id, photo_file, caption=f"Вам попалась повторка {chosen_bird['name']}! Будут начислены только очки.\nРедкость: {chosen_bird['rarity']}\n+{chosen_bird['points']} очков.\nОбитание: {chosen_bird['place']}\n\nВсего поинтов: {user_data['points']}")
+				bot.send_photo(message.chat.id, photo_file, caption=f"Вам попалась повторка {chosen_bird['name']}! Будут начислены только очки.\nРедкость: {chosen_bird['rarity']}\n+{chosen_bird['points']} очков.\nОбитание: {chosen_bird['place']}\n\nВсего поинтов: {user_data['points'] + chosen_bird['points']}")
 			user_data['points'] += int(chosen_bird['points'])
 		else:
 			with open(photo_data, 'rb') as photo_file:
