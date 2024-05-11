@@ -10,7 +10,7 @@ from io import BytesIO
 import os
 import logging
 
-def config_func(): да
+def config_func():
 	with open('config.json', 'r', encoding='utf-8') as file:
 		data = json.load(file)
 	return data
