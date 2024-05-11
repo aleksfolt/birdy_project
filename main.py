@@ -10,7 +10,7 @@ from io import BytesIO
 import os
 import logging
 
-def config_func():
+def config_func(): да
 	with open('config.json', 'r', encoding='utf-8') as file:
 		data = json.load(file)
 	return data
@@ -666,8 +666,6 @@ def handle_text(message):
 				handle_profile(message)
 			elif message.text == "/cards_top" or message.text == "Топ карточек" or message.text == "топ карточек":
 				cards_top(message)
-			elif message.text == "ORMPRO782" or message.text == "EDOCEPRM148":
-				promocode(message)
 	except Exception as e:
 			bot.send_message(message.chat.id, "Временная ошибка в обработке, повторите позже.")
 			bot.send_message(1130692453, f"Произошла ошибка при обработке команды: в чате: {message.chat.id}. Ошибка: {e}")
