@@ -194,9 +194,10 @@ def knock_cards_function(message):
 
 	if time_since_last_usage < default_wait:
 		remaining_time = default_wait - time_since_last_usage
+		remaining_hours = int(remaining_time // 120)
 		remaining_minutes = int(remaining_time // 60)
 		remaining_seconds = int(remaining_time % 60)
-		bot.reply_to(message, f"Вам нужно передохнуть 😴 {remaining_minutes} минут {remaining_seconds} секунд перед следующем наблюдением за птичками!")
+		bot.reply_to(message, f"Вам нужно передохнуть 😴 {remaining_hours} часов {remaining_minutes} минут {remaining_seconds} секунд перед следующем наблюдением за птичками!")
 		return
 
 	random_number = random.randint(1, 95)
