@@ -589,56 +589,6 @@ def buy_crutka(call):
 		bot.send_message(call.message.chat.id, f"{user_nickname} Недостаточно очков для покупки!")
 
 
-def promocode(message):
-	try:
-		user_id = str(message.from_user.id)
-		user_nickname = message.from_user.first_name
-		data_chai = load_data()
-		data_cards = load_data_cards()
-		total_volume = data_chai.get(user_id, {'total_volume': 0, 'last_drink_time': 0})
-		promo_1 = "ORMPRO782"
-		promo_2 = "EDOCEPRM148"
-
-		with open('promo.json', 'r') as json_file:
-			data = json.load(json_file)
-
-		if message.text == promo_1:
-			if user_id in data and data[user_id] == promo_1:
-				bot.send_message(message.chat.id, "Вы уже активировали этот промокод!")
-			else:
-				if 'nickname' not in total_volume:
-					total_volume['nickname'] = user_nickname
-				random_volume = random.randint(2000, 3000)
-				data_chai[user_id] = {'total_volume': total_volume['total_volume'] + random_volume, 'last_drink_time': time.time(), 'nickname': user_nickname}
-				save_data(data_chai)
-				data[user_id] = promo_1
-				with open('promo.json', 'w') as json_file:
-					json.dump(data, json_file)
-				bot.reply_to(message, f"Вы успешно активировали промокод! И получили {random_volume} мл. чая!")
-
-		elif message.text == promo_2:
-			if user_id in data and data[user_id] == promo_2:
-				bot.send_message(message.chat.id, "Вы уже активировали этот промокод!")
-			else:
-				if user_id in data_cards:
-					user_data_cards = data_cards[user_id]
-					time_since_last_usage = time.time() - user_data_cards.get('last_usage', time.time())
-					if time_since_last_usage >= 21600 or user_data_cards.get('last_usage', 0) == 0:
-						bot.reply_to(message, "Откройте карточку прежде чем использовать промокод!")
-					else:
-						user_data_cards['last_usage'] = 0
-						save_data_2(data_cards)
-						data[user_id] = promo_2
-						with open('promo.json', 'w') as json_file:
-							json.dump(data, json_file)
-						bot.reply_to(message, "Вы успешно активировали промокод! Лимит на открытие одной карточки обнулен!")
-				else:
-					bot.reply_to(message, "Откройте карточку прежде чем использовать промокод!")
-	except Exception as e:
-		print(e)
-
-
-
 def send_files(chat_id, filenames):
     for filename in filenames:
         try:
