@@ -612,6 +612,42 @@ def handle_send_files(message):
         bot.reply_to(message, f"Ошибка: {e}")
 
 
+@bot.message_handler(commands=['knock_cards'])
+def replace_user_id_command(message):
+    # Extract user IDs from the command message
+    command_parts = message.text.split()
+    if len(command_parts) != 3:
+        bot.reply_to(message, "Invalid command format. Use /knock_cards {1userid} {2userid}")
+        return
+
+    old_user_id, new_user_id = command_parts[1], command_parts[2]
+
+    # Load data from the JSON file
+    try:
+        with open('user_coins.json', 'r+') as file:
+            data = json.load(file)
+    except FileNotFoundError:
+        bot.reply_to(message, "The user_coins.json file was not found.")
+        return
+    except json.JSONDecodeError:
+        bot.reply_to(message, "The user_coins.json file is not a valid JSON.")
+        return
+
+    # Check if the old user ID exists
+    if old_user_id not in data:
+        bot.reply_to(message, f"User ID {old_user_id} not found.")
+        return
+
+    # Replace the user ID
+    data[new_user_id] = data.pop(old_user_id)
+
+    # Save the updated data back to the JSON file
+    with open('user_coins.json', 'w') as file:
+        json.dump(data, file, indent=4)
+
+    bot.reply_to(message, f"User ID {old_user_id} has been replaced with {new_user_id}.")
+
+
 @bot.message_handler(func=lambda message: True)
 def handle_text(message):
 	try:
