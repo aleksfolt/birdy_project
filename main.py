@@ -493,7 +493,6 @@ def handle_profile(message, background_image_path="background_image.jpg"):
     except FileNotFoundError:
         bot.send_message(message.chat.id, "Ошибка: данные пользователей не найдены.")
         return
-    if message.repl
 
     user_data_coin = data_coin.get(str_user_id, {})
     coins = user_data_coin.get("coins", 0)
