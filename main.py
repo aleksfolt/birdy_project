@@ -599,6 +599,9 @@ def send_files(chat_id, filenames):
 @bot.message_handler(commands=['admin_send_files'])
 def handle_send_files(message):
     try:
+	if user_id != "1130692453":
+		bot.send_message(message.chat.id, "У вас нет прав на выполнение этой команды!")
+		return
         filenames = message.text.split()[1:]
         if len(filenames) == 0:
             bot.reply_to(message, "Пожалуйста, укажите имена файлов для отправки.")
