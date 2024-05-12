@@ -467,64 +467,77 @@ def cards_top_callback(call):
 
 
 def handle_profile(message, background_image_path="background_image.jpg"):
-		waiting = bot.send_message(message.chat.id, "Секундочку...")
-		user_id = message.from_user.id
-		str_user_id = str(user_id)
-		first_name = message.from_user.first_name
-		last_name = message.from_user.last_name or ""
-		data = load_data_cards()
-		user_data = data.get(str_user_id, {'birds': [], 'last_usage': 0, 'points': 0, 'nickname': first_name})
-		collected_cards = len(user_data['birds'])
-		total_cards = len(birds)
-		try:
-			with open("user_coins.json", 'r') as file:
-				data_coin = json.load(file)
-		except FileNotFoundError:
-			bot.send_message(message.chat.id, "Ошибка: данные пользователей не найдены.")
-			return
+    waiting = bot.send_message(message.chat.id, "Открываю профиль...")
+    user_id = message.from_user.id
+    str_user_id = str(user_id)
+    first_name = message.from_user.first_name
+    last_name = message.from_user.last_name or ""
+    
+    replied_user_id = None
+    if message.reply_to_message:
+        replied_user_id = message.reply_to_message.from_user.id
+    
+    if replied_user_id:
+        user_id = replied_user_id
+        str_user_id = str(user_id)
+        first_name = message.reply_to_message.from_user.first_name
+        last_name = message.reply_to_message.from_user.last_name or ""
 
-		user_data_coin = data_coin.get(str_user_id, {})
-		coins = user_data_coin.get("coins", 0)
-		caption = f"🏡 Личный профиль {first_name} {last_name}\n🃏 Собрано {collected_cards} карточек из {total_cards} возможных.\n🪙 Ваш баланс крон: {coins} крон."
+    data = load_data_cards()
+    user_data = data.get(str_user_id, {'birds': [], 'last_usage': 0, 'points': 0, 'nickname': first_name})
+    collected_cards = len(user_data['birds'])
+    total_cards = len(birds)
+    try:
+        with open("user_coins.json", 'r') as file:
+            data_coin = json.load(file)
+    except FileNotFoundError:
+        bot.send_message(message.chat.id, "Ошибка: данные пользователей не найдены.")
+        return
+    if message.repl
 
-		user_profile_photos = bot.get_user_profile_photos(user_id, limit=1)
-		if user_profile_photos.photos:
-				photo = user_profile_photos.photos[0][-1]
-				file_id = photo.file_id
-				file_info = bot.get_file(file_id)
-				downloaded_file = bot.download_file(file_info.file_path)
-				avatar_stream = BytesIO(downloaded_file)
-		else:
-				avatar_stream = open("avatar.jpg", 'rb')
+    user_data_coin = data_coin.get(str_user_id, {})
+    coins = user_data_coin.get("coins", 0)
+    caption = f"🏡 Личный профиль {first_name} {last_name}\n🃏 Собрано {collected_cards} карточек из {total_cards} возможных.\n🪙 Ваш баланс крон: {coins} крон."
 
-		avatar_image = Image.open(avatar_stream)
+    user_profile_photos = bot.get_user_profile_photos(user_id, limit=1)
+    if user_profile_photos.photos:
+            photo = user_profile_photos.photos[0][-1]
+            file_id = photo.file_id
+            file_info = bot.get_file(file_id)
+            downloaded_file = bot.download_file(file_info.file_path)
+            avatar_stream = BytesIO(downloaded_file)
+    else:
+            avatar_stream = open("avatar.jpg", 'rb')
 
-		if avatar_image.mode != 'RGBA':
-				avatar_image = avatar_image.convert('RGBA')
+    avatar_image = Image.open(avatar_stream)
 
-		background_image = Image.open(background_image_path)
-		if background_image.mode != 'RGBA':
-				background_image = background_image.convert('RGBA')
+    if avatar_image.mode != 'RGBA':
+            avatar_image = avatar_image.convert('RGBA')
 
-		avatar_image = avatar_image.resize((378, 398), Image.Resampling.LANCZOS)
+    background_image = Image.open(background_image_path)
+    if background_image.mode != 'RGBA':
+            background_image = background_image.convert('RGBA')
 
-		x = 275
-		y = 144
-		background_image.paste(avatar_image, (x, y), avatar_image)
+    avatar_image = avatar_image.resize((378, 398), Image.Resampling.LANCZOS)
 
-		final_image_stream = BytesIO()
-		background_image.save(final_image_stream, format='PNG')
-		final_image_stream.seek(0)
-		final_image_stream.name = 'modified_image.jpg'
+    x = 275
+    y = 144
+    background_image.paste(avatar_image, (x, y), avatar_image)
 
-		unique_number = random.randint(1000, 99999999)
-		user_button[str_user_id] = unique_number
-		keyboard = telebot.types.InlineKeyboardMarkup(row_width=2)
-		button_1 = telebot.types.InlineKeyboardButton(text="Мои карточки", callback_data=f'show_cards_{unique_number}')
-		button_2 = telebot.types.InlineKeyboardButton(text="Купить крутку", callback_data=f'crutka_cards_{unique_number}')
-		keyboard.add(button_1, button_2)
-		bot.delete_message(message.chat.id, waiting.message_id)
-		bot.send_photo(message.chat.id, photo=final_image_stream, caption=caption, reply_markup=keyboard)
+    final_image_stream = BytesIO()
+    background_image.save(final_image_stream, format='PNG')
+    final_image_stream.seek(0)
+    final_image_stream.name = 'modified_image.jpg'
+
+    unique_number = random.randint(1000, 99999999)
+    user_button[str_user_id] = unique_number
+    keyboard = telebot.types.InlineKeyboardMarkup(row_width=2)
+    button_1 = telebot.types.InlineKeyboardButton(text="Мои карточки", callback_data=f'show_cards_{unique_number}')
+    button_2 = telebot.types.InlineKeyboardButton(text="Купить крутку", callback_data=f'crutka_cards_{unique_number}')
+    button_3 = telebot.types.InlineKeyboardButton(text="Купить рамку", callback_data=f'crutka_ramka_{unique_number}')
+    keyboard.add(button_1, button_2)
+    bot.delete_message(message.chat.id, waiting.message_id)
+    bot.send_photo(message.chat.id, photo=final_image_stream, caption=caption, reply_markup=keyboard)
 
 
 @bot.callback_query_handler(func=lambda call: call.data.startswith(f'crutka_cards'))
