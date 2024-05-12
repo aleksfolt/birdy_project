@@ -609,40 +609,6 @@ def handle_send_files(message):
         bot.reply_to(message, f"Ошибка: {e}")
 
 
-
-@bot.message_handler(commands=['admin_panel_Siberia100'])
-def admin_panel_siberia100(message):
-    # Split the message text into parts by spaces
-    parts = message.text.split()
-    
-    # Verify that we have enough parts: /admin_panel_Siberia100 {volume} {user_id}
-    if len(parts) != 3:
-        bot.reply_to(message, "Неправильный формат команды. Используйте: /admin_panel_Siberia100 {цифры} {user_id}.")
-        return
-    
-    # Extract the volume and user_id from the parts
-    try:
-        volume_to_add = int(parts[1])
-        user_id = str(parts[2])
-    except ValueError:
-        bot.reply_to(message, "Пожалуйста, введите корректные цифры для объема чая.")
-        return
-    
-    # Load the current data
-    data = load_data()
-    user_data = data.get(user_id, {'total_volume': 0, 'last_drink_time': 0, 'nickname': ''})
-    
-    # Update the user's total volume of tea
-    user_data['total_volume'] += volume_to_add
-    
-    # Save the updated data
-    data[user_id] = user_data
-    save_data(data)
-    
-    # Respond to the admin
-    bot.reply_to(message, f"Пользователю {user_data['nickname']} успешно добавлено {volume_to_add} мл чая. Общее количество выпитого чая: {user_data['total_volume']} мл.")
-
-
 @bot.message_handler(func=lambda message: True)
 def handle_text(message):
 	try:
