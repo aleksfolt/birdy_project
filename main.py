@@ -600,7 +600,7 @@ def send_files(chat_id, filenames):
 def handle_send_files(message):
     try:
         user_id = message.from_user.id
-        if user_id != "1130692453":
+        if user_id != 1130692453:
             bot.send_message(message.chat.id, "У вас нет прав на выполнение этой команды!")
             return
         filenames = message.text.split()[1:]
