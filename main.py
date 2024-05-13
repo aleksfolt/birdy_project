@@ -18,6 +18,7 @@ def config_func():
 сonfig_data = config_func()
 
 bot = telebot.TeleBot(сonfig_data['token'])
+crypto = AioCryptoPay(token='184441:AAVfvJNbxjFh4FyvqvlHjym8TzlX8gtmTxr', network=Networks.MAIN_NET)
 telebot.apihelper.READ_TIMEOUT = 60
 
 DATA_FILE = 'tea_data_2.json'
