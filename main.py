@@ -652,20 +652,30 @@ def buy_crutka(call):
 
 
 
-async def create_and_send_invoice(sender_id):
+async def create_and_send_invoice(sender_id, is_group=False):
     try:
         invoice = await crypto.create_invoice(asset='USDT', amount=0.5)
         if not invoice:
-            bot.send_message(sender_id, "Ошибка при создании инвойса. Попробуйте позже.")
+            if is_group:
+                bot.send_message(sender_id, "Ошибка при создании инвойса. Пожалуйста, напишите что-то боту в личку.")
+            else:
+                bot.send_message(sender_id, "Ошибка при создании инвойса. Попробуйте позже.")
             return None
 
         markup = types.InlineKeyboardMarkup()
         url_requisites = types.InlineKeyboardButton(text="Оплатить", url=invoice.bot_invoice_url)
         markup.add(url_requisites)
-        bot.send_message(sender_id, f"Премиум активируется через 150 секунд в случае успешной оплаты! Реквизиты: {invoice.bot_invoice_url}", reply_markup=markup)
-        return invoice  # Ensure that only the URL is returned
+        if is_group:
+            bot.send_message(sender_id, "Реквизиты для оплаты отправлены в личные сообщения.")
+            bot.send_message(sender_id, f"Премиум активируется через 100 секунд в случае успешной оплаты! Реквизиты: {invoice.bot_invoice_url}", reply_markup=markup)
+        else:
+            bot.send_message(sender_id, f"Премиум активируется через 100 секунд в случае успешной оплаты! Реквизиты: {invoice.bot_invoice_url}", reply_markup=markup)
+        return invoice 
     except Exception as e:
-        bot.send_message(sender_id, f"Ошибка при создании инвойса: {e}")
+        if is_group:
+            bot.send_message(sender_id, "Произошла ошибка при создании инвойса. Пожалуйста, напишите что-то боту в личку.")
+        else:
+            bot.send_message(sender_id, f"Ошибка при создании инвойса: {e}")
         return None
 
 def check_payment(sender_id, invoice_url):
@@ -695,7 +705,7 @@ def buy_premium(message):
     sender_id = message.from_user.id
     invoice = run_async(create_and_send_invoice(sender_id))
     if invoice:
-        t = threading.Timer(10, check_payment, args=(sender_id, invoice))
+        t = threading.Timer(100, check_payment, args=(sender_id, invoice))
         t.start()
     else:
         bot.send_message(sender_id, "Не удалось создать инвойс.")
