@@ -668,9 +668,9 @@ async def create_and_send_invoice(sender_id, is_group=False, message=None):
         markup.add(url_requisites)
         if is_group:
             bot.send_message(message.chat.id, "Реквизиты для оплаты отправлены в личные сообщения.")
-            bot.send_message(sender_id, f"Премиум активируется через 100 секунд в случае успешной оплаты! Реквизиты: {invoice.bot_invoice_url}", reply_markup=markup)
+            bot.send_message(sender_id, f"Премиум активируется через 100 секунд в случае успешной оплаты. Если вы оплатите чек после истечения времени вы потеряете деньги! Реквизиты: {invoice.bot_invoice_url}", reply_markup=markup)
         else:
-            bot.send_message(sender_id, f"Премиум активируется через 100 секунд в случае успешной оплаты! Реквизиты: {invoice.bot_invoice_url}", reply_markup=markup)
+            bot.send_message(sender_id, f"Премиум активируется через 100 секунд в случае успешной оплаты. Если вы оплатите чек после истечения времени вы потеряете деньги! Реквизиты: {invoice.bot_invoice_url}", reply_markup=markup)
         return invoice 
     except Exception as e:
         if is_group:
