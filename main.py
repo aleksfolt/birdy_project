@@ -667,14 +667,14 @@ async def create_and_send_invoice(sender_id, is_group=False):
         url_requisites = types.InlineKeyboardButton(text="Оплатить", url=invoice.bot_invoice_url)
         markup.add(url_requisites)
         if is_group:
-            bot.send_message(sender_id, "Реквизиты для оплаты отправлены в личные сообщения.")
+            bot.send_message(message.chat.id, "Реквизиты для оплаты отправлены в личные сообщения.")
             bot.send_message(sender_id, f"Премиум активируется через 100 секунд в случае успешной оплаты! Реквизиты: {invoice.bot_invoice_url}", reply_markup=markup)
         else:
             bot.send_message(sender_id, f"Премиум активируется через 100 секунд в случае успешной оплаты! Реквизиты: {invoice.bot_invoice_url}", reply_markup=markup)
         return invoice 
     except Exception as e:
         if is_group:
-            bot.send_message(sender_id, "Произошла ошибка при создании инвойса. Пожалуйста, напишите что-то боту в личку.")
+            bot.send_message(message.chat.id, "Произошла ошибка при создании инвойса. Пожалуйста, напишите что-то боту в личку.")
         else:
             bot.send_message(sender_id, f"Ошибка при создании инвойса: {e}")
         return None
