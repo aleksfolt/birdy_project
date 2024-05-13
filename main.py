@@ -653,12 +653,12 @@ def buy_crutka(call):
 
 
 
-async def create_and_send_invoice(sender_id, is_group=False):
+async def create_and_send_invoice(sender_id, is_group=False, message=None):
     try:
         invoice = await crypto.create_invoice(asset='USDT', amount=0.5)
         if not invoice:
             if is_group:
-                bot.send_message(sender_id, "Ошибка при создании инвойса. Пожалуйста, напишите что-то боту в личку.")
+                bot.send_message(message.chat.id, "Ошибка при создании инвойса. Пожалуйста, напишите что-то боту в личку.")
             else:
                 bot.send_message(sender_id, "Ошибка при создании инвойса. Попробуйте позже.")
             return None
@@ -706,16 +706,16 @@ async def get_invoice_status(invoice):
 def buy_premium(message):
     sender_id = message.from_user.id
     if message.chat.type == "private":
-        invoice = run_async(create_and_send_invoice(sender_id))
+        invoice = run_async(create_and_send_invoice(sender_id, message=message))
         if invoice:
             t = threading.Timer(100, check_payment, args=(sender_id, invoice))
             t.start()
         else:
             bot.send_message(sender_id, "Не удалось создать инвойс.")
-    else:  # Групповой чат
-        invoice = run_async(create_and_send_invoice(sender_id, is_group=True))
+    else: 
+        invoice = run_async(create_and_send_invoice(sender_id, is_group=True, message=message))
         if not invoice:
-            bot.send_message(sender_id, "Произошла ошибка при создании инвойса. Пожалуйста, напишите что-то боту в личку.")
+            bot.send_message(message.chat.id, "Произошла ошибка при создании инвойса. Пожалуйста, напишите что-то боту в личку.")
 
 
 def send_files(chat_id, filenames):
