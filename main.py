@@ -546,6 +546,7 @@ def handle_profile(message, background_image_path="background_image.jpg"):
         return
 
     user_data_coin = data_coin.get(str_user_id, {})
+    premium_users = load_premium_users()
     coins = user_data_coin.get("coins", 0)
     if str_user_id in premium_users:
         expiration_time = datetime.fromisoformat(premium_users[str_user_id])
@@ -701,14 +702,20 @@ async def get_invoice_status(invoice):
         print(f"Ошибка при получении данных инвойса: {e}")
         return None
 
+
 def buy_premium(message):
     sender_id = message.from_user.id
-    invoice = run_async(create_and_send_invoice(sender_id))
-    if invoice:
-        t = threading.Timer(100, check_payment, args=(sender_id, invoice))
-        t.start()
-    else:
-        bot.send_message(sender_id, "Не удалось создать инвойс.")
+    if message.chat.type == "private":
+        invoice = run_async(create_and_send_invoice(sender_id))
+        if invoice:
+            t = threading.Timer(100, check_payment, args=(sender_id, invoice))
+            t.start()
+        else:
+            bot.send_message(sender_id, "Не удалось создать инвойс.")
+    else:  # Групповой чат
+        invoice = run_async(create_and_send_invoice(sender_id, is_group=True))
+        if not invoice:
+            bot.send_message(sender_id, "Произошла ошибка при создании инвойса. Пожалуйста, напишите что-то боту в личку.")
 
 
 def send_files(chat_id, filenames):
