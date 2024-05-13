@@ -360,9 +360,9 @@ def handle_stocoin(message):
         is_premium = user_id in premium_users and datetime.fromisoformat(premium_users[user_id]) > datetime.now()
 
         if is_premium:
-            random_volume = random.randint(1, 20)
+            coins = random.randint(1, 20)
         else:
-            random_volume = random.randint(1, 10)
+            coins = random.randint(1, 10)
         update_user_data(user_id, username, coins)
 
         with open("user_coins.json", 'r') as file:
