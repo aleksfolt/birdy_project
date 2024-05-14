@@ -598,7 +598,7 @@ def handle_profile(message, background_image_path="background_image.jpg"):
     button_1 = telebot.types.InlineKeyboardButton(text="Мои карточки", callback_data=f'show_cards_{unique_number}')
     button_2 = telebot.types.InlineKeyboardButton(text="Купить крутку", callback_data=f'crutka_cards_{unique_number}')
     button_3 = telebot.types.InlineKeyboardButton(text="Премиум", callback_data=f'birdy_prem_{unique_number}')
-    keyboard.add(button_1, button_2)
+    keyboard.add(button_1, button_2, button_3)
     bot.delete_message(message.chat.id, waiting.message_id)
     bot.send_photo(message.chat.id, photo=final_image_stream, caption=caption, reply_markup=keyboard)
 
