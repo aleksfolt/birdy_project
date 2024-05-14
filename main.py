@@ -597,9 +597,20 @@ def handle_profile(message, background_image_path="background_image.jpg"):
     keyboard = telebot.types.InlineKeyboardMarkup(row_width=2)
     button_1 = telebot.types.InlineKeyboardButton(text="Мои карточки", callback_data=f'show_cards_{unique_number}')
     button_2 = telebot.types.InlineKeyboardButton(text="Купить крутку", callback_data=f'crutka_cards_{unique_number}')
+    button_3 = telebot.types.InlineKeyboardButton(text="Премиум", callback_data=f'birdy_prem_{unique_number}')
     keyboard.add(button_1, button_2)
     bot.delete_message(message.chat.id, waiting.message_id)
     bot.send_photo(message.chat.id, photo=final_image_stream, caption=caption, reply_markup=keyboard)
+
+
+@bot.callback_query_handler(func=lambda call: call.data.startswith(f'birdy_prem'))
+def crutki(call):
+    unique_number = int(call.data.split('_')[-1])
+    user_id = str(call.from_user.id)
+    if user_button.get(user_id) != unique_number:
+        bot.answer_callback_query(call.id, "Не ваша кнопка.", show_alert=True)
+        return
+    bot.send_message(message.chat.id, "💎 Birdy Premium\n\nПреимущества:\nКроны выдаются от 1 до 20 вместо 1 до 10.\nЧай выдается от 500 до 2000 вместо 200 до 2000.\nВ топе чая отображается алмаз.\nВ будущем будет добавлено больше всего.\n\nПокупка:\nКоманда: /prem.\nОплата USDT, @CryptoBot")
 
 
 @bot.callback_query_handler(func=lambda call: call.data.startswith(f'crutka_cards'))
