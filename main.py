@@ -104,9 +104,12 @@ def save_premium_users(users):
 @bot.message_handler(commands=['start'])
 def start_command(message):
 	first_name = message.from_user.first_name
-	text = f'''
-Хеей 🐦 {first_name}! Я Birdy.
+	text = f'''Хеей 🕊 {first_name}! Я Birdy. Бот для развлечений, тут можешь пить чай или открывать карточки, все команды можно посмотреть по команде /help.'''
+	bot.send_message(message.chat.id, text)
 
+@bot.message_handler(commands=['help'])
+def help_command(message):
+	text = '''
 Краткое описание команд:
 /profile, "Профиль" - ваш профиль
 /chai, "Чай" - выпить чай
@@ -117,8 +120,7 @@ def start_command(message):
 /shop, "Магазин" - магазин, с товарами за монеты
 /goods, "Покупки" - ваши покупки
 
-Полный список команд с описанием [тут](https://teletype.in/@hlb_folt/jNICgr9tP50).
-	'''
+Полный список команд с описанием [тут](https://teletype.in/@hlb_folt/jNICgr9tP50).'''
 	bot.send_message(message.chat.id, text, parse_mode='Markdown', disable_web_page_preview=True)
 
 
