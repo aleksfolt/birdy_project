@@ -70,6 +70,6 @@
     "product2": {"name": "Бинокль Celestron SkyMaster 25x100", "price": 200, "image": "images/2_celestron.jpg"},
     "product3": {"name": "Бинокль Fujinon 25x150 MT-SX", "price": 300, "image": "images/3_fujion.jpg"},
     "product4": {"name": "Бинокль Carl Zeiss Jena 40x105.", "price": 500, "image": "images/4_carl.jpg"},
-    "product5": {"name": "Хлеб, Описание: повышение шансов на легендарную птичку.", "price": 150, "image": "images/hleb.jpg"}
+    "product5": {"name": "Хлеб, Описание: повышение шансов на легендарную птичку на один раз.", "price": 150, "image": "images/hleb.jpg"}
   }
 }
