@@ -562,7 +562,7 @@ def handle_profile(message, background_image_path="background_image.jpg"):
 			premium_status = "истек"
 	else:
 		premium_status = "не активен"
-	caption = f"🏡 Личный профиль {first_name} {last_name}\n🃏 Собрано {collected_cards} карточек из {total_cards} возможных.\n🪙 Ваш баланс крон: {coins} крон.\nБаланс поинтов: {user_data['points']}\n💎 Премиум статус: {premium_status}"
+	caption = f"🏡 Личный профиль {first_name} {last_name}\n🃏 Собрано {collected_cards} карточек из {total_cards} возможных.\n🪙 Ваш баланс крон: {coins} крон.\n🏆 Баланс поинтов: {user_data['points']}\n💎 Премиум статус: {premium_status}"
 
 	user_profile_photos = bot.get_user_profile_photos(user_id, limit=1)
 	if user_profile_photos.photos:
