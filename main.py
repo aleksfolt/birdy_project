@@ -101,6 +101,20 @@ def save_premium_users(users):
 		json.dump(users, f, indent=4)
 
 
+BANLIST_FILE = 'banlist.json'
+
+def load_banlist():
+    try:
+        with open(BANLIST_FILE, 'r') as file:
+            return json.load(file)
+    except FileNotFoundError:
+        return []
+
+def save_banlist(banlist):
+    with open(BANLIST_FILE, 'w') as file:
+        json.dump(banlist, file)
+
+
 @bot.message_handler(commands=['start'])
 def start_command(message):
 	first_name = message.from_user.first_name
@@ -755,30 +769,56 @@ def handle_send_files(message):
 		bot.reply_to(message, f"Ошибка: {e}")
 
 
+@bot.message_handler(commands=['banlist'])
+def send_banlist(message):
+    banlist = load_banlist()
+    if banlist:
+        banlist_str = '\n'.join(str(user_id) for user_id in banlist)
+        bot.send_message(message.chat.id, f"Бан-лист:\n{banlist_str}")
+    else:
+        bot.send_message(message.chat.id, "Бан-лист пуст.")
+
+
 @bot.message_handler(func=lambda message: True)
 def handle_text(message):
-	try:
-			if message.text == "/chai" or message.text == "чай" or message.text == "Чай":
-				send_random_tea(message)
-			elif message.text == "/chai_top" or message.text == "чай топ" or message.text == "Чай топ" or message.text == "Топ чая" or message.text == "топ чая":
-				chai_top(message)
-			elif message.text == "/knock" or message.text == "кнок" or message.text == "Кнок" or message.text == "получить карту" or message.text == "Получить карту":
-				knock_cards_function(message)
-			elif message.text == "/krone" or message.text == "крона" or message.text == "Крона" or message.text == "монета" or message.text == "Монета":
-				handle_stocoin(message)
-			elif message.text == "/shop" or message.text == "магазин" or message.text == "Магазин" or message.text == "шоп" or message.text == "Шоп":
-				handle_shop(message)
-			elif message.text == "/goods" or message.text == "Покупки" or message.text == "покупки":
-				handle_goods(message)
-			elif message.text == "/profile" or message.text == "Профиль" or message.text == "профиль":
-				handle_profile(message)
-			elif message.text == "/cards_top" or message.text == "Топ карточек" or message.text == "топ карточек":
-				cards_top(message)
-			elif message.text == "/prem" or message.text == "премиум" or message.text == "Премиум":
-				buy_premium(message)
-	except Exception as e:
-			bot.send_message(message.chat.id, "Временная ошибка в обработке, повторите позже.")
-			bot.send_message(1130692453, f"Произошла ошибка при обработке команды: в чате: {message.chat.id}. Ошибка: {e}")
+    try:
+    	user_id = message.from_user.id
+    	if user_id != 1130692453:
+	        if message.reply_to_message:
+	            if message.text == "/ban":
+	                user_id = message.reply_to_message.from_user.id
+	                banlist = load_banlist()
+	                if user_id not in banlist:
+	                    banlist.append(user_id)
+	                    save_banlist(banlist)
+	                    bot.send_message(message.chat.id, f"Пользователь {user_id} добавлен в бан-лист.")
+	                else:
+	                    bot.send_message(message.chat.id, f"Пользователь {user_id} уже в бан-листе.")
+	            return
+	    else:
+	    	bot.send_message(message.chat.id, "куда лезешь.")
+
+        if message.text in ["/chai", "чай", "Чай"]:
+            send_random_tea(message)
+        elif message.text in ["/chai_top", "чай топ", "Чай топ", "Топ чая", "топ чая"]:
+            chai_top(message)
+        elif message.text in ["/knock", "кнок", "Кнок", "получить карту", "Получить карту"]:
+            knock_cards_function(message)
+        elif message.text in ["/krone", "крона", "Крона", "монета", "Монета"]:
+            handle_stocoin(message)
+        elif message.text in ["/shop", "магазин", "Магазин", "шоп", "Шоп"]:
+            handle_shop(message)
+        elif message.text in ["/goods", "Покупки", "покупки"]:
+            handle_goods(message)
+        elif message.text in ["/profile", "Профиль", "профиль"]:
+            handle_profile(message)
+        elif message.text in ["/cards_top", "Топ карточек", "топ карточек"]:
+            cards_top(message)
+        elif message.text in ["/prem", "премиум", "Премиум"]:
+            buy_premium(message)
+    except Exception as e:
+        bot.send_message(message.chat.id, "Временная ошибка в обработке, повторите позже.")
+        bot.send_message(1130692453, f"Произошла ошибка при обработке команды: в чате: {message.chat.id}. Ошибка: {e}")
 
 try:
 	bot.infinity_polling()
