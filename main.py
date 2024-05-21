@@ -101,20 +101,6 @@ def save_premium_users(users):
 		json.dump(users, f, indent=4)
 
 
-BANLIST_FILE = 'banlist.json'
-
-def load_banlist():
-    try:
-        with open(BANLIST_FILE, 'r') as file:
-            return json.load(file)
-    except FileNotFoundError:
-        return []
-
-def save_banlist(banlist):
-    with open(BANLIST_FILE, 'w') as file:
-        json.dump(banlist, file)
-
-
 @bot.message_handler(commands=['start'])
 def start_command(message):
 	first_name = message.from_user.first_name
@@ -769,35 +755,9 @@ def handle_send_files(message):
 		bot.reply_to(message, f"Ошибка: {e}")
 
 
-@bot.message_handler(commands=['banlist'])
-def send_banlist(message):
-    banlist = load_banlist()
-    if banlist:
-        banlist_str = '\n'.join(str(user_id) for user_id in banlist)
-        bot.send_message(message.chat.id, f"Бан-лист:\n{banlist_str}")
-    else:
-        bot.send_message(message.chat.id, "Бан-лист пуст.")
-
-
 @bot.message_handler(func=lambda message: True)
 def handle_text(message):
     try:
-    	user_id = message.from_user.id
-    	if user_id != 1130692453:
-	        if message.reply_to_message:
-	            if message.text == "/ban":
-	                user_id = message.reply_to_message.from_user.id
-	                banlist = load_banlist()
-	                if user_id not in banlist:
-	                    banlist.append(user_id)
-	                    save_banlist(banlist)
-	                    bot.send_message(message.chat.id, f"Пользователь {user_id} добавлен в бан-лист.")
-	                else:
-	                    bot.send_message(message.chat.id, f"Пользователь {user_id} уже в бан-листе.")
-	            return
-	    else:
-	    	bot.send_message(message.chat.id, "куда лезешь.")
-
         if message.text in ["/chai", "чай", "Чай"]:
             send_random_tea(message)
         elif message.text in ["/chai_top", "чай топ", "Чай топ", "Топ чая", "топ чая"]:
